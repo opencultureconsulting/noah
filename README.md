@@ -3,7 +3,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Datenfluss
 
-![Datenflussdiagramm](/home/felix/git/noah/flowchart.svg)
+![Datenflussdiagramm](flowchart.svg)
 
 ## Verwendete Tools
 
