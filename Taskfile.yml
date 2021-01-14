@@ -1,0 +1,35 @@
+# https://taskfile.dev
+
+version: '3'
+
+#silent: true
+output: prefixed
+
+includes:
+  siegen: ./tasks/siegen.yml
+#  wuppertal: ./tasks/wuppertal.yml
+
+vars:
+  DATE: '{{ now | date "2006-01-02"}}'
+
+env:
+  OPENREFINE:
+    sh: readlink -e openrefine/refine
+  OPENREFINE_CLIENT:
+    sh: readlink -e openrefine/openrefine-client
+
+tasks:
+  default:
+    desc: alle Datenquellen harvesten und transformieren (parallel)
+    preconditions:
+      - sh: test -n "$(command -v metha-sync)"
+        msg: "requirement metha missing"
+      - sh: test -n "$(command -v java)"
+        msg: "requirement JAVA runtime environment (jre) missing"
+      - sh: test -x "$OPENREFINE"
+        msg: "requirement OpenRefine missing"
+      - sh: test -x "$OPENREFINE_CLIENT"
+        msg: "requirement openrefine-client missing"
+    deps:
+#      - task: wuppertal:default
+      - task: siegen:default

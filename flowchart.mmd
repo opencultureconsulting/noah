@@ -1,0 +1,19 @@
+graph LR
+wuppertal[elpub.bib.uni-wuppertal.de] --- metha_wuppertal
+click wuppertal "http://elpub.bib.uni-wuppertal.de/servlets/OAIDataProvider?verb=ListRecords&metadataPrefix=oai_dc" _blank
+siegen[dspace.ub.uni-siegen.de] --- metha_siegen
+click siegen "https://dspace.ub.uni-siegen.de/oai/request?verb=ListRecords&metadataPrefix=xMetaDissPlus" _blank
+subgraph Harvesting
+metha_wuppertal["fa:fa-cogs metha"]
+metha_siegen["fa:fa-cogs metha"]
+end
+subgraph Transformation
+metha_wuppertal  -->|Dublin Core| refine_wuppertal[fa:fa-cogs OpenRefine]
+metha_siegen -->|xMetaDissPlus| refine_siegen[fa:fa-cogs OpenRefine]
+end
+subgraph OAI-PMH Data Provider
+refine_wuppertal -->|METS/MODS| oai_wuppertal["noah.opencultureconsulting.com/ubw/"]
+click oai_wuppertal "https://noah.opencultureconsulting.com/ubw/?verb=ListRecords&metadataPrefix=mets" _blank
+refine_siegen -->|METS/MODS| oai_siegen["noah.opencultureconsulting.com/ubs/"]
+click oai_siegen "https://noah.opencultureconsulting.com/ubs/?verb=ListRecords&metadataPrefix=mets" _blank
+end

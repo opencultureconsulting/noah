@@ -1,0 +1,409 @@
+[
+  {
+    "op": "core/column-move",
+    "columnName": "Record - header - identifier",
+    "index": 0,
+    "description": "Move column Record - header - identifier to position 0"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - xsi:schemaLocation",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - xsi:schemaLocation"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:creator - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:creator - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:identifier - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:identifier - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:title - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:title - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - countryCode",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - countryCode"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:address - cc:Scheme",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:address - cc:Scheme"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:language - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:language - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:rights - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:rights - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:rights - ddb:kind",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:rights - ddb:kind"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:server",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:server"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:contact - ddb:contactID",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:contact - ddb:contactID"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dini:version_driver",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dini:version_driver"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:identifier - ddb:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:identifier - ddb:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:issued - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dcterms:issued - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:checksum - ddb:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:checksum - ddb:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:transfer - ddb:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - ddb:transfer - ddb:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - countryCode",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - countryCode"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:name",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:name"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:place",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:place"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:department - cc:place",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:department - cc:place"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:dateAccepted - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dcterms:dateAccepted - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative - xsi:type"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:hasVersion - xsi:type",
+    "description": "Remove column Record - metadata - xMetaDiss:xMetaDiss - dcterms:hasVersion - xsi:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - header - identifier",
+    "newColumnName": "id",
+    "description": "Rename column Record - header - identifier to id"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:subject",
+    "newColumnName": "dc:subject",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:subject to dc:subject"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:subject - xsi:type",
+    "newColumnName": "dc:subject/xsi:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:subject - xsi:type to dc:subject/xsi:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:type",
+    "newColumnName": "dc:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:type to dc:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:type - xsi:type",
+    "newColumnName": "dc:type/xsi:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:type - xsi:type to dc:type/xsi:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - pc:surName",
+    "newColumnName": "dc:creator/pc:surName",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - pc:surName to dc:creator/pc:surName"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - pc:foreName",
+    "newColumnName": "dc:creator/pc:foreName",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:creator - pc:person - pc:name - pc:foreName to dc:creator/pc:foreName"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:identifier",
+    "newColumnName": "dc:identifier",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:identifier to dc:identifier"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract",
+    "newColumnName": "dcterms:abstract",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract to dcterms:abstract"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract - lang",
+    "newColumnName": "dcterms:abstract/lang",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:abstract - lang to dcterms:abstract/lang"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:title",
+    "newColumnName": "dc:title",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:title to dc:title"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:title - lang",
+    "newColumnName": "dc:title/lang",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:title - lang to dc:title/lang"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:title - ddb:type",
+    "newColumnName": "dc:title/ddb:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:title - ddb:type to dc:title/ddb:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:fileProperties - ddb:fileName",
+    "newColumnName": "ddb:fileName",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:fileProperties - ddb:fileName to ddb:fileName"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:fileProperties - ddb:fileSize",
+    "newColumnName": "ddb:fileSize",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:fileProperties - ddb:fileSize to ddb:fileSize"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:address",
+    "newColumnName": "dc:publisher/cc:address",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:address to dc:publisher/cc:address"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:GKD-Nr",
+    "newColumnName": "dc:publisher/cc:GKD-Nr",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:GKD-Nr to dc:publisher/cc:GKD-Nr"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:name",
+    "newColumnName": "dc:publisher/cc:name",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:name to dc:publisher/cc:name"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:place",
+    "newColumnName": "dc:publisher/cc:place",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:publisher - cc:universityOrInstitution - cc:place to dc:publisher/cc:place"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:language",
+    "newColumnName": "dc:language",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:language to dc:language"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:rights",
+    "newColumnName": "dc:rights",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:rights to dc:rights"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:fileNumber",
+    "newColumnName": "ddb:fileNumber",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:fileNumber to ddb:fileNumber"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:identifier",
+    "newColumnName": "ddb:identifier",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:identifier to ddb:identifier"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:issued",
+    "newColumnName": "dcterms:issued",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:issued to dcterms:issued"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:checksum",
+    "newColumnName": "ddb:checksum",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:checksum to ddb:checksum"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - ddb:transfer",
+    "newColumnName": "ddb:transfer",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - ddb:transfer to ddb:transfer"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:level",
+    "newColumnName": "thesis:level",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:level to thesis:level"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:department - cc:name",
+    "newColumnName": "thesis:grantor",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - thesis:degree - thesis:grantor - cc:universityOrInstitution - cc:department - cc:name to thesis:grantor"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:dateAccepted",
+    "newColumnName": "dcterms:dateAccepted",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:dateAccepted to dcterms:dateAccepted"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:isPartOf - xsi:type",
+    "newColumnName": "dcterms:isPartOf/xsi:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:isPartOf - xsi:type to dcterms:isPartOf/xsi:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:isPartOf",
+    "newColumnName": "dcterms:isPartOf",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:isPartOf to dcterms:isPartOf"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:source",
+    "newColumnName": "dc:source",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:source to dc:source"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:source - xsi:type",
+    "newColumnName": "dc:source/xsi:type",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:source - xsi:type to dc:source/xsi:type"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - thesis:role",
+    "newColumnName": "dc:contributor/thesis:role",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - thesis:role to dc:contributor/thesis:role"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - pc:surName",
+    "newColumnName": "dc:contributor/pc:surName",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - pc:surName to dc:contributor/pc:surName"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - pc:foreName",
+    "newColumnName": "dc:contributor/pc:foreName",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dc:contributor - pc:person - pc:name - pc:foreName to dc:contributor/pc:foreName"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative",
+    "newColumnName": "dcterms:alternative",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative to dcterms:alternative"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative - lang",
+    "newColumnName": "dcterms:alternative/lang",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:alternative - lang to dcterms:alternative/lang"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - metadata - xMetaDiss:xMetaDiss - dcterms:hasVersion",
+    "newColumnName": "dcterms:hasVersion",
+    "description": "Rename column Record - metadata - xMetaDiss:xMetaDiss - dcterms:hasVersion to dcterms:hasVersion"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - header - setSpec",
+    "newColumnName": "setSpec",
+    "description": "Rename column Record - header - setSpec to setSpec"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Record - header - datestamp",
+    "newColumnName": "datestamp",
+    "description": "Rename column Record - header - datestamp to datestamp"
+  }
+]

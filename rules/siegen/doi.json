@@ -1,0 +1,84 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "id",
+    "urlExpression": "grel:'https://dspace.ub.uni-siegen.de/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=' + value",
+    "onError": "set-to-blank",
+    "newColumnName": "doi",
+    "columnInsertIndex": 1,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4.1 [437dc4d]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column doi at index 1 by fetching URLs based on column id using expression grel:'https://dspace.ub.uni-siegen.de/oai/request?verb=GetRecord&metadataPrefix=oai_dc&identifier=' + value"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "doi",
+    "expression": "grel:forNonBlank(filter(value.parseXml().select('dc|identifier'),v,v.xmlAttr('xsi:type') == 'doi:doi')[0].ownText(),v,v,null)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc using expression grel:forNonBlank(filter(value.parseXml().select('dc|identifier'),v,v.xmlAttr('xsi:type') == 'doi:doi')[0].ownText(),v,v,null)"
+  }
+]

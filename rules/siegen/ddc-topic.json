@@ -1,0 +1,74 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "dc:subject/xsi:type",
+          "expression": "value",
+          "columnName": "dc:subject/xsi:type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "xMetaDiss:DDC-SG",
+                "l": "xMetaDiss:DDC-SG"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:subject",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "ddc",
+    "columnInsertIndex": 2,
+    "description": "Create column ddc at index 2 based on column dc:subject using expression grel:value"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "dc:subject/xsi:type",
+          "expression": "value",
+          "columnName": "dc:subject/xsi:type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "xMetaDiss:noScheme",
+                "l": "xMetaDiss:noScheme"
+              }
+            },
+            {
+              "v": {
+                "v": "xMetaDiss:SWD",
+                "l": "xMetaDiss:SWD"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:subject",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "topic",
+    "columnInsertIndex": 2,
+    "description": "Create column topic at index 2 based on column dc:subject using expression grel:value"
+  }
+]

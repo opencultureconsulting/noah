@@ -1,0 +1,693 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "doi",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column doi using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "id",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column id using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:subject",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:subject using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "topic",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column topic using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:subject/xsi:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:subject/xsi:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddc",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddc using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:identifier",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:identifier using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:creator/pc:foreName",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:creator/pc:foreName using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:creator/pc:surName",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:creator/pc:surName using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:type/xsi:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:type/xsi:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "nonsort",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column nonsort using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:title",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:title using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:abstract/lang",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:abstract/lang using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:abstract",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:abstract using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "hbz",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column hbz using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:publisher/cc:address",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:publisher/cc:address using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:fileSize",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:fileSize using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:fileName",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:fileName using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:title/ddb:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:title/ddb:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:title/lang",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:title/lang using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:rights",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:rights using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:language",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:language using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:publisher/cc:place",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:publisher/cc:place using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:publisher/cc:name",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:publisher/cc:name using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:publisher/cc:GKD-Nr",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:publisher/cc:GKD-Nr using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:checksum",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:checksum using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:issued",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:issued using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:identifier",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:identifier using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:fileNumber",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:fileNumber using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "cc",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column cc using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:dateAccepted",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:dateAccepted using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "thesis:grantor",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column thesis:grantor using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "thesis:level",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column thesis:level using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "mime",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mime using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:transfer",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:transfer using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:contributor/thesis:role",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:contributor/thesis:role using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:source/xsi:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:source/xsi:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:source",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:source using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:isPartOf",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:isPartOf using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:isPartOf/xsi:type",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:isPartOf/xsi:type using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:hasVersion",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:hasVersion using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:alternative/lang",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:alternative/lang using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dcterms:alternative",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dcterms:alternative using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:contributor/pc:foreName",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:contributor/pc:foreName using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dc:contributor/pc:surName",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:contributor/pc:surName using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "datestamp",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column datestamp using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "setSpec",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column setSpec using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "dini",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dini using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "doctype",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column doctype using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "linkcheck",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column linkcheck using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
+  },
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "Blank Rows",
+          "expression": "(filter(row.columnNames,cn,isNonBlank(cells[cn].value)).length()==0).toString()",
+          "columnName": "",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "true",
+                "l": "true"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "description": "Remove rows"
+  }
+]

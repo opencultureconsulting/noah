@@ -1,0 +1,131 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    desc: harvesten und transformieren
+    deps: [harvest]
+    cmds:
+      - ulimit -n 10000 # prevent "too many open files" exit
+      - task: refine
+      - task: check
+      - task: split
+      - task: validate
+      - task: zip
+
+  harvest:
+    desc: nur harvesten
+    dir: data/siegen/harvest
+    cmds:
+      - METHA_DIR=$PWD metha-sync --format xMetaDissPlus https://dspace.ub.uni-siegen.de/oai/request
+      - METHA_DIR=$PWD metha-cat --format xMetaDissPlus https://dspace.ub.uni-siegen.de/oai/request > siegen.xml
+
+  refine:
+    dir: data/siegen/refine
+    ignore_error: true # Bei Exit würde java-Prozess verwaisen https://github.com/go-task/task/issues/141 
+    env:
+      PORT: 3334
+      RAM: 8G
+      PROJECT: siegen
+    cmds:
+      # start OpenRefine
+      - $OPENREFINE -v warn -p $PORT -m $RAM -d $PWD > openrefine.log 2>&1 &
+      - timeout 30s bash -c "until curl -s http://localhost:$PORT | cat | grep -q -o OpenRefine ; do sleep 1; done"
+      # Import (erfordert absoluten Pfad zur XML-Datei)
+      - $OPENREFINE_CLIENT -P $PORT --create "$(readlink -e ../harvest/siegen.xml)" --recordPath Records --recordPath Record --storeEmptyStrings false --trimStrings true --projectName $PROJECT
+      # Vorverarbeitung: Spalte mit Identifier nach Vorne; Nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/vorverarbeitung.json $PROJECT
+      # URNs extrahieren: Dubletten entfernen und verschiedene URNs zusammenführen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/urn.json $PROJECT
+      # Fehlende Direktlinks ergänzen: Wenn keine Angabe in ddb:transfer, dann zusätzlich METS Format abfragen; aus METS Flocat extrahieren und die URLs in ddb:transfer ablegen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/direktlinks.json $PROJECT
+      # Datensätze ohne Direktlink auf ein PDF löschen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nur-mit-pdf.json $PROJECT
+      # Aufteilung dc:subject in ddc und topic
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/ddc-topic.json $PROJECT
+      # Standardisierte Rechteangaben (Canonical Name aus CC Links in dc:rights)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/cc.json $PROJECT
+      # Internet Media Type aus ddb:transfer ableiten: Mapping manuell nach Apache: http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/mime.json $PROJECT
+      # DOIs aus Format OAI_DC ergänzen: Für alle Datensätze zusätzlich DC Format abfragen; Aus DC dc:identifier mit xsi:type doi:doi extrahieren
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doi.json $PROJECT
+      # Abgleich mit lobid resources für HT-Nummer: teilweise mehrere URNs: wir machen dann eine ODER-Suche bei lobid; teilweise mehrere Treffer für eine URN: wir nehmen hier immer den ersten Treffer bei lobid
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/hbz.json $PROJECT
+      # Für die Sortierung mods:nonSort: nur für das erste Element in dc:title je Datensatz
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nonsort.json $PROJECT
+      # DINI Publikationstypen aus dc:type extrahieren
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/dini.json $PROJECT
+      # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habiliation dann oaHabil
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doctype.json $PROJECT
+      # Links auf Verfügbarkeit prüfen: ermittelt HTTP status code (z.B. 200)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/linkcheck.json $PROJECT
+      # Pro Zeile ein Datensatz und anschließend leere Zeilen löschen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/join.json $PROJECT
+      # Export mit Templating
+      - |
+        $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/siegen/template.txt)" --rowSeparator "
+        <!-- SPLIT -->
+        " --output siegen.txt $PROJECT
+      # Export für Debugging
+      - $OPENREFINE_CLIENT -P $PORT --export --output siegen-debug.tsv $PROJECT
+      # stop OpenRefine
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # print server load
+      - kill -9 $(lsof -t -i:$PORT) # SIGKILL prevents saving projects
+      - rm -rf ./*.project* && rm -f workspace.json # delete temporary OpenRefine files
+    sources:
+      - ../harvest/siegen.xml
+      - ../../../rules/siegen/*.json
+      - ../../../rules/siegen/template.txt
+#     - ../../../rules/common/*.json
+    generates:
+      - siegen.txt
+      - siegen-debug.tsv
+
+  check:
+    dir: data/siegen/refine
+    cmds:
+      # check OpenRefine log for any warnings
+      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "log contains warnings!" && exit 1; fi
+      # TODO: Prüfung, ob Mindestmenge an Datensätzen vorhanden ist (z.B. mit wc -l)
+      # TODO: Linkcheck-Ergebnis aus siegen-debug.tsv mit grep auf nicht 200 prüfen
+
+  split:
+    dir: data/siegen/split
+    cmds:
+      # in Einzeldateien aufteilen
+      - csplit -q ../refine/siegen.txt --suppress-matched '/<!-- SPLIT -->/' "{*}"
+      # ggf. vorhandene XML-Dateien löschen
+      - rm -f *.xml
+      # Identifier als Dateinamen
+      - for f in xx*; do mv "$f" "$(xmllint --xpath "//*[local-name(.) = 'recordIdentifier']/text()" "$f").xml"; done
+    sources:
+      - ../refine/siegen.txt
+    generates:
+      - ./*.xml
+
+  validate:
+    dir: data/siegen/
+    cmds:
+      # Validierung gegen METS Schema
+      - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
+      - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
+    sources:
+      - split/*.xml
+    generates:
+      - validate.log
+
+  zip:
+    dir: data/siegen/
+    cmds:
+      # ZIP-Archiv mit Zeitstempel erstellen
+      - zip -q -FS -j siegen_{{.DATE}}.zip split/*.xml
+    sources:
+      - split/*.xml
+    generates:
+      - siegen_{{.DATE}}.zip      
+
+  delete:
+    desc: cache löschen
+    cmds:
+      - rm -rf data/siegen

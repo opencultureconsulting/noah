@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "ddb:transfer",
+          "expression": "isBlank(value)",
+          "columnName": "ddb:transfer",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "ddb:transfer",
+    "expression": "grel:with([ ['pdf','application/pdf'], ['exe','application/x-msdownload'], ['zip','application/zip'] ], x, forEach(value.split('␞'), v, forEach(x, z, if(v.endsWith(z[0]), z[1], null)).join('')).join('␞'))",
+    "onError": "set-to-blank",
+    "newColumnName": "mime",
+    "columnInsertIndex": 29,
+    "description": "Create column mime at index 29 based on column ddb:transfer using expression grel:with([ ['pdf','application/pdf'], ['exe','application/x-msdownload'], ['zip','application/zip'] ], x, forEach(value.split('␞'), v, forEach(x, z, if(v.endsWith(z[0]), z[1], null)).join('')).join('␞'))"
+  }
+]

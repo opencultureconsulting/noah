@@ -1,0 +1,68 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "dc:type/xsi:type",
+          "expression": "value",
+          "columnName": "dc:type/xsi:type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "dini:PublType",
+                "l": "dini:PublType"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:type",
+    "expression": "grel:with([ ['article','oaArticle'], ['bachelorThesis','oaBachelorThesis'], ['book','oaBook'], ['bookPart','oaBookPart'], ['conferenceObject','conferenceObject'], ['doctoralThesis','oaDoctoralThesis'], ['masterThesis','oaMasterThesis'], ['PeriodicalPart','journal issue'], ['StudyThesis','oaStudyThesis'], ['Other','oaBdOther'] ], x, forEach(x, v, if(value == v[0], v[1], null)).join(''))",
+    "onError": "set-to-blank",
+    "newColumnName": "doctype",
+    "columnInsertIndex": 7,
+    "description": "Create column doctype at index 7 based on column dc:type using expression grel:with([ ['article','oaArticle'], ['bachelorThesis','oaBachelorThesis'], ['book','oaBook'], ['bookPart','oaBookPart'], ['conferenceObject','conferenceObject'], ['doctoralThesis','oaDoctoralThesis'], ['masterThesis','oaMasterThesis'], ['StudyThesis','oaStudyThesis'], ['Other','oaBdOther'] ], x, forEach(x, v, if(value == v[0], v[1], null)).join(''))"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "thesis:level",
+          "expression": "value",
+          "columnName": "thesis:level",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "thesis.habilitation",
+                "l": "thesis.habilitation"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "doctype",
+    "expression": "grel:'oaHabil'",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column doctype using expression grel:'oaHabil'"
+  }
+]

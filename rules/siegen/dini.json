@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "dc:type/xsi:type",
+          "expression": "value",
+          "columnName": "dc:type/xsi:type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "dini:PublType",
+                "l": "dini:PublType"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:type",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "dini",
+    "columnInsertIndex": 7,
+    "description": "Create column dini at index 7 based on column dc:type using expression grel:value"
+  }
+]

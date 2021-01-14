@@ -1,0 +1,127 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        },
+        {
+          "type": "list",
+          "name": "ddb:transfer",
+          "expression": "isBlank(value)",
+          "columnName": "ddb:transfer",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": true,
+                "l": "true"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "id",
+    "urlExpression": "grel:'https://dspace.ub.uni-siegen.de/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=' + value",
+    "onError": "set-to-blank",
+    "newColumnName": "mets",
+    "columnInsertIndex": 1,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4.1 [437dc4d]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column mets at index 1 by fetching URLs based on column id using expression grel:'https://dspace.ub.uni-siegen.de/oai/request?verb=GetRecord&metadataPrefix=mets&identifier=' + value"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        },
+        {
+          "type": "list",
+          "name": "ddb:transfer",
+          "expression": "isBlank(value)",
+          "columnName": "ddb:transfer",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": true,
+                "l": "true"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "ddb:transfer",
+    "expression": "grel:forEach(cells['mets'].value.parseXml().select('FLocat'),v,v.xmlAttr('xlink:href')).join('␞')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column ddb:transfer using expression grel:forEach(cells['mets'].value.parseXml().select('FLocat'),v,v.xmlAttr('xlink:href')).join('␞')"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "mets",
+    "description": "Remove column mets"
+  }
+]

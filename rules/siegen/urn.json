@@ -1,0 +1,15 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "record-based"
+    },
+    "columnName": "dc:identifier",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.uniques().join('␞'),'')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column dc:identifier using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.uniques().join('␞'),'')"
+  }
+]

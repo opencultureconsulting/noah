@@ -1,0 +1,25 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:rights",
+          "columnName": "dc:rights",
+          "query": "creativecommons.org",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:rights",
+    "expression": "grel:value.replace('https://','').replace('http://','').replace('creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()",
+    "onError": "set-to-blank",
+    "newColumnName": "cc",
+    "columnInsertIndex": 23,
+    "description": "Create column cc at index 23 based on column dc:rights using expression grel:value.replace('https://','').replace('http://','').replace('creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()"
+  }
+]

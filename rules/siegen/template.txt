@@ -1,0 +1,75 @@
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <mets:dmdSec ID="DMD_siegen_opus_{{cells['id'].value.split('/').reverse()[0].escape('xml')}}">
+        <mets:mdWrap MIMETYPE="text/xml" MDTYPE="MODS">
+            <mets:xmlData>
+                <mods xmlns="http://www.loc.gov/mods/v3" version="3.7"
+                    xmlns:vl="http://visuallibrary.net/vl">{{forEachIndex(cells['dc:title'].value.split('␞'), i, v, '
+                    <titleInfo' + forNonBlank(cells['dc:title/lang'].value.split('␞')[i], v, ' lang="' + v.escape('xml') + '"', '') + if(and(i != 0, cells['dc:title/ddb:type'].value == 'translated'), ' type="translated"', '') + '>' + forNonBlank(cells['nonsort'].value, z,'
+                        <nonSort>' + z.escape('xml') + '</nonSort>', '') + '
+                        <title>'+v.split('␞')[0].escape('xml')+'</title>'+forNonBlank(cells['dcterms:alternative/lang'].value, v, '
+                        <subTitle lang="' + v.escape('xml') + '"' + '>' + cells['dcterms:alternative'].value.escape('xml') + '</subTitle>', '')+'
+                    </titleInfo>').join('')}}{{forNonBlank(cells['dc:creator/pc:surName'].value,x,with(cells['dc:creator/pc:foreName'].value,y,forEachIndex(x.split('␞'),i,v,'
+                    <name type="personal">
+                        <displayForm>'+ x.split('␞')[i].escape('xml') + ', ' + y.split('␞')[i].escape('xml') +'</displayForm>
+                        <namePart type="family">' + v.escape('xml') + '</namePart>
+                        <namePart type="given">' + y.split('␞')[i].escape('xml') + '</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>')).join(''),'')}}{{forNonBlank(cells['dc:contributor/pc:surName'].value,x,with(cells['dc:contributor/pc:foreName'].value,y,forEachIndex(x.split('␞'),i,v,'
+                    <name type="personal">
+                        <displayForm>'+ x.split('␞')[i].escape('xml') + ', ' + y.split('␞')[i].escape('xml') +'</displayForm>
+                        <namePart type="family">' + v.escape('xml') + '</namePart>
+                        <namePart type="given">' + y.split('␞')[i].escape('xml') + '</namePart>' + forNonBlank(cells['dc:contributor/thesis:role'].value, v, '
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">' + v.escape('xml').replace('referee', 'ths').replace('editor', 'edt') + '</roleTerm>
+                        </role>', '') + '
+                    </name>')).join(''),'')}}
+                    <typeOfResource>text</typeOfResource>{{forNonBlank(cells['dini'].value, v, '
+                    <genre authority="dini">' + v.escape('xml') + '</genre>', '')}}{{forNonBlank(cells['dcterms:issued'].value,v,'
+                    <originInfo>
+                        <dateIssued encoding="w3cdtf" keyDate="yes">' + v.escape('xml') + '</dateIssued>
+                    </originInfo>','')}}{{forNonBlank(cells['dc:language'].value,v,'
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">' + v.split('␞')[0].escape('xml') + '</languageTerm>
+                    </language>','')}}{{forNonBlank(cells['dcterms:abstract'].value, x, forEachIndex(x.split('␞'), i, v, '
+                    <abstract type="content"' + forNonBlank(cells['dcterms:abstract/lang'].value.split('␞')[i], z, ' lang="' + z.escape('xml') + '"','') + '>' + v.escape('xml') + '</abstract>').join(''),'')}}{{forNonBlank(cells['topic'].value,x,'
+                    <subject>' + forEach(x.split('␞'),v,'
+                        <topic>' + v.escape('xml') + '</topic>').join('') + '
+                    </subject>','')}}{{forNonBlank(cells['ddc'].value,x,forEach(x.split('␞'),v,'
+                    <classification authority="ddc">' + v.escape('xml') + '</classification>').join(''),'')}}{{forNonBlank(cells['thesis:grantor'].value,x,forEach(x.split('␞'),v,'
+                    <classification authority="ioo" displayLabel="' + v.escape('xml') + '"></classification>').join(''),'')}}{{forNonBlank(cells['dc:identifier'].value,v,'
+                    <identifier type="urn">' + v.escape('xml') + '</identifier>','')}}{{forNonBlank(cells['doi'].value,v,'
+                    <identifier type="doi">' + v.escape('xml') + '</identifier>','')}}{{forNonBlank(cells['hbz'].value,v,'
+                    <identifier type="sys">' + v.escape('xml') + '</identifier>','')}}{{forNonBlank(cells['cc'].value,v,'
+                    <accessCondition type="use and reproduction">' + v.escape('xml') + '</accessCondition>','')}}
+                    <recordInfo>
+                        <recordIdentifier>siegen_opus_{{cells['id'].value.split('/').reverse()[0].escape('xml')}}</recordIdentifier>
+                    </recordInfo>{{forNonBlank(cells['doctype'].value, v,'
+                    <extension>
+                        <vl:doctype>' + v.escape('xml') + '</vl:doctype>' + forNonBlank(cells['dcterms:dateAccepted'].value, x, '
+                        <vl:defenseDate>' + x.escape('xml') + '</vl:defenseDate>', '') + '
+                    </extension>', '')}}
+                </mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>{{forEachIndex(cells['ddb:transfer'].value.split('␞'), i, v, '
+        <mets:fileGrp USE="' + if(i == 0, 'pdf upload', 'generic file') + '">
+            <mets:file MIMETYPE="' + cells['mime'].value.split('␞')[i] + '" ID="FILE' + i + '_siegen_opus_' + cells['id'].value.split('/').reverse()[0].escape('xml') + '">
+                <mets:FLocat xlink:href="' + v.escape('xml') + '" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>')}}
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div TYPE="document" ID="siegen_opus_{{cells['id'].value.split('/').reverse()[0].escape('xml')}}"
+            DMDID="DMD_siegen_opus_{{cells['id'].value.split('/').reverse()[0].escape('xml')}}">
+            <mets:fptr FILEID="FILE0_siegen_opus_{{cells['id'].value.split('/').reverse()[0].escape('xml')}}"/>{{forEachIndex(cells['ddb:transfer'].value.split('␞').slice(1), i, v, '
+            <mets:div TYPE="part" ID="PART' + (i+1) + '_siegen_opus_' + cells['id'].value.split('/').reverse()[0].escape('xml') + '"
+                LABEL="' + cells['ddb:fileName'].value.split('␞')[i+1] + '">
+                <mets:fptr FILEID="FILE' + (i+1) + '_siegen_opus_' + cells['id'].value.split('/').reverse()[0].escape('xml') + '"/>
+            </mets:div>').join('')}}
+        </mets:div>
+    </mets:structMap>
+</mets:mets>
