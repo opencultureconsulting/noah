@@ -7,7 +7,6 @@ tasks:
     desc: harvesten und transformieren
     deps: [harvest]
     cmds:
-      - ulimit -n 10000 # provisorisch Exit durch "too many open files" vermeiden
       - task: refine
       - task: check
       - task: split

@@ -116,6 +116,14 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 * OpenRefine-Transformationsregeln in [rules](rules)
   * Beispiel: [rules/siegen/hbz.json](rules/siegen/hbz.json)
 
+## Known Issues
+
+> too many open files
+
+```
+ulimit -n 10000
+```
+
 ## OAI-PMH Data Provider
 
 Für die Bereitstellung der transformierten Daten wird der dateibasierte OAI-PMH Data Provider [oai_pmh](https://github.com/opencultureconsulting/oai_pmh) genutzt. Installations- und Nutzungshinweise sind dort zu finden.
