@@ -142,6 +142,6 @@ tasks:
       - test -z $(ls -t *.zip | sed -n 2p)
 
   delete:
-    desc: cache löschen
+    desc: harvesting cache löschen
     cmds:
-      - rm -rf data/siegen
+      - rm -rf data/siegen/harvest
