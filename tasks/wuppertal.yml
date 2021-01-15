@@ -89,6 +89,8 @@ tasks:
     cmds:
       # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
       - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
+      # Prüfen, ob Mindestanzahl von 1300 Datensätzen generiert wurde
+      - if (( 1300 > $(grep -c recordIdentifier wuppertal.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/wuppertal.txt!" && exit 1; fi
 
   split:
     dir: data/wuppertal/split
