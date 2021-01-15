@@ -58,8 +58,8 @@ tasks:
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/dini.json $PROJECT
       # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habilitation dann doctype oaHabil
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doctype.json $PROJECT
-      # Links auf Volltexte prüfen: HTTP status code ermitteln (z.B. 200)
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/linkcheck.json $PROJECT
+#TODO      # Links auf Volltexte prüfen: HTTP status code ermitteln (z.B. 200)
+#TODO      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/linkcheck.json $PROJECT
       # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/join.json $PROJECT
       # Export in METS:MODS mit Templating

@@ -62,8 +62,8 @@ tasks:
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/hbz.json $PROJECT
       # Sortierung mods:nonSort für das erste Element in dc:title
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/nonsort.json $PROJECT
-      # Links prüfen: HTTP status code ermitteln (z.B. 200)
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/linkcheck.json $PROJECT
+#TODO      # Links prüfen: HTTP status code ermitteln (z.B. 200)
+#TODO      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/linkcheck.json $PROJECT
       # Export in METS:MODS mit Templating
       - |
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/wuppertal/template.txt)" --rowSeparator "
