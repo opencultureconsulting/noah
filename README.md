@@ -1,6 +1,8 @@
 # Datenintegration für noah.nrw
 Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das Portal [noah.nrw](https://noah.nrw/)
 
+> **:warning: Dies ist ein Prototyp für die Beta-Version des Portals noah.nrw; für den Produktivbetrieb ist der Einsatz von [metafacture](https://github.com/metafacture) geplant.**
+
 ## Datenfluss
 
 ![Datenflussdiagramm](flowchart.svg)
@@ -28,21 +30,20 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 2. [OpenRefine 3.4.1](https://github.com/OpenRefine/OpenRefine/releases/tag/3.4.1) (benötigt JAVA 8+)
 
     ```sh
-    # download OpenRefine
+    # in Unterverzeichnis openrefine installieren
     wget -O openrefine.tar.gz https://github.com/OpenRefine/OpenRefine/releases/download/3.4.1/openrefine-linux-3.4.1.tar.gz
-    # install OpenRefine in subdirectory openrefine
     mkdir -p openrefine
     tar -xzf openrefine.tar.gz -C openrefine --strip 1 && rm openrefine.tar.gz
-    # do not try to open OpenRefine in browser
+    # automatisches Starten des Browsers abschalten
     sed -i '$ a JAVA_OPTIONS=-Drefine.headless=true' "openrefine/refine.ini"
-    # set autosave period from 5 minutes to 25 hours
+    # Zeitraum für automatisches Speichern von 5 Minuten auf 25 Stunden erhöhen
     sed -i 's/#REFINE_AUTOSAVE_PERIOD=60/REFINE_AUTOSAVE_PERIOD=1440/' "openrefine/refine.ini"
     ```
     
 3. [openrefine-client 0.3.10](https://github.com/opencultureconsulting/openrefine-client/releases/tag/v0.3.10)
 
     ```sh
-    # install openrefine-client in subdirectory openrefine
+    # in Unterverzeichnis openrefine installieren
     mkdir -p openrefine
     wget -O openrefine/openrefine-client https://github.com/opencultureconsulting/openrefine-client/releases/download/v0.3.10/openrefine-client_0-3-10_linux
     chmod +x openrefine/openrefine-client
@@ -53,33 +54,29 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 	a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
     ```sh
-    # download and install rpm package
     wget https://github.com/miku/metha/releases/download/v0.2.20/metha-0.2.20-0.x86_64.rpm
     sudo dnf install ./metha-0.2.20-0.x86_64.rpm && rm metha-0.2.20-0.x86_64.rpm
     ```
-
-	b) DEB-basiert (Debian, Ubuntu etc.)
-
-    ```sh
-    # download and install deb package
+   
+b) DEB-basiert (Debian, Ubuntu etc.)
+	
+ ```sh
     wget https://github.com/miku/metha/releases/download/v0.2.20/metha_0.2.20_amd64.deb
     sudo apt install ./metha_0.2.20_amd64.deb && rm metha_0.2.20_amd64.deb
     ```
-
+   
 5. [Task 3.2.2](https://github.com/go-task/task/releases/tag/v3.2.2)
 
 	a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
     ```sh
-    # download and install rpm package
     wget https://github.com/go-task/task/releases/download/v3.2.2/task_linux_amd64.rpm
     sudo dnf install ./task_linux_amd64.rpm && rm task_linux_amd64.rpm
     ```
-
-	b) DEB-basiert (Debian, Ubuntu etc.)
-
-    ```sh
-    # download and install deb package
+   
+b) DEB-basiert (Debian, Ubuntu etc.)
+	
+ ```sh
     wget https://github.com/go-task/task/releases/download/v3.2.2/task_linux_amd64.deb
     sudo apt install ./task_linux_amd64.deb && rm task_linux_amd64.deb
     ```
@@ -115,7 +112,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 * Umgebungsvariablen in [Taskfile.yml](Taskfile.yml)
 * Workflow für die Datenquellen in [tasks](tasks)
   * Beispiel: [tasks/siegen.yml](tasks/siegen.yml)
-* Transformationsregeln in [rules](rules)
+* OpenRefine-Transformationsregeln in [rules](rules)
   * Beispiel: [rules/siegen/hbz.json](rules/siegen/hbz.json)
 
 ## OAI-PMH Data Provider

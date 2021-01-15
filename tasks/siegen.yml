@@ -7,7 +7,7 @@ tasks:
     desc: harvesten und transformieren
     deps: [harvest]
     cmds:
-      - ulimit -n 10000 # prevent "too many open files" exit
+      - ulimit -n 10000 # provisorisch Exit durch "too many open files" vermeiden
       - task: refine
       - task: check
       - task: split
@@ -23,22 +23,22 @@ tasks:
 
   refine:
     dir: data/siegen/refine
-    ignore_error: true # Bei Exit würde java-Prozess verwaisen https://github.com/go-task/task/issues/141 
+    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141 
     env:
       PORT: 3334
       RAM: 8G
       PROJECT: siegen
     cmds:
-      # start OpenRefine
+      # OpenRefine starten
       - $OPENREFINE -v warn -p $PORT -m $RAM -d $PWD > openrefine.log 2>&1 &
       - timeout 30s bash -c "until curl -s http://localhost:$PORT | cat | grep -q -o OpenRefine ; do sleep 1; done"
       # Import (erfordert absoluten Pfad zur XML-Datei)
       - $OPENREFINE_CLIENT -P $PORT --create "$(readlink -e ../harvest/siegen.xml)" --recordPath Records --recordPath Record --storeEmptyStrings false --trimStrings true --projectName $PROJECT
-      # Vorverarbeitung: Spalte mit Identifier nach Vorne; Nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
+      # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/vorverarbeitung.json $PROJECT
       # URNs extrahieren: Dubletten entfernen und verschiedene URNs zusammenführen
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/urn.json $PROJECT
-      # Fehlende Direktlinks ergänzen: Wenn keine Angabe in ddb:transfer, dann zusätzlich METS Format abfragen; aus METS Flocat extrahieren und die URLs in ddb:transfer ablegen
+      # Fehlende Direktlinks aus Format METS ergänzen: Wenn keine Angabe in ddb:transfer, dann zusätzlich METS Format abfragen und daraus METS Flocat extrahieren
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/direktlinks.json $PROJECT
       # Datensätze ohne Direktlink auf ein PDF löschen
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nur-mit-pdf.json $PROJECT
@@ -46,33 +46,33 @@ tasks:
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/ddc-topic.json $PROJECT
       # Standardisierte Rechteangaben (Canonical Name aus CC Links in dc:rights)
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/cc.json $PROJECT
-      # Internet Media Type aus ddb:transfer ableiten: Mapping manuell nach Apache: http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+      # Internet Media Type aus ddb:transfer ableiten: Mapping manuell nach Apache http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/mime.json $PROJECT
-      # DOIs aus Format OAI_DC ergänzen: Für alle Datensätze zusätzlich DC Format abfragen; Aus DC dc:identifier mit xsi:type doi:doi extrahieren
+      # DOIs aus Format OAI_DC ergänzen: Für alle Datensätze zusätzlich DC Format abfragen und daraus dc:identifier mit Typ doi extrahieren
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doi.json $PROJECT
-      # Abgleich mit lobid resources für HT-Nummer: teilweise mehrere URNs: wir machen dann eine ODER-Suche bei lobid; teilweise mehrere Treffer für eine URN: wir nehmen hier immer den ersten Treffer bei lobid
+      # Anreicherung HT-Nummer via lobid-resources: Bei mehreren URNs ODER-Suche; bei mehreren Treffern wird nur der erste übernommen
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/hbz.json $PROJECT
-      # Für die Sortierung mods:nonSort: nur für das erste Element in dc:title je Datensatz
+      # Sortierung mods:nonSort für das erste Element in dc:title
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nonsort.json $PROJECT
       # DINI Publikationstypen aus dc:type extrahieren
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/dini.json $PROJECT
-      # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habiliation dann oaHabil
+      # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habilitation dann doctype oaHabil
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doctype.json $PROJECT
-      # Links auf Verfügbarkeit prüfen: ermittelt HTTP status code (z.B. 200)
+      # Links auf Volltexte prüfen: HTTP status code ermitteln (z.B. 200)
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/linkcheck.json $PROJECT
-      # Pro Zeile ein Datensatz und anschließend leere Zeilen löschen
+      # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/join.json $PROJECT
-      # Export mit Templating
+      # Export in METS:MODS mit Templating
       - |
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/siegen/template.txt)" --rowSeparator "
         <!-- SPLIT -->
         " --output siegen.txt $PROJECT
       # Export für Debugging
       - $OPENREFINE_CLIENT -P $PORT --export --output siegen-debug.tsv $PROJECT
-      # stop OpenRefine
-      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # print server load
-      - kill -9 $(lsof -t -i:$PORT) # SIGKILL prevents saving projects
-      - rm -rf ./*.project* && rm -f workspace.json # delete temporary OpenRefine files
+      # OpenRefine beenden
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # Statistik
+      - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
+      - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
     sources:
       - ../harvest/siegen.xml
       - ../../../rules/siegen/*.json
@@ -85,10 +85,8 @@ tasks:
   check:
     dir: data/siegen/refine
     cmds:
-      # check OpenRefine log for any warnings
+      # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
       - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "log contains warnings!" && exit 1; fi
-      # TODO: Prüfung, ob Mindestmenge an Datensätzen vorhanden ist (z.B. mit wc -l)
-      # TODO: Linkcheck-Ergebnis aus siegen-debug.tsv mit grep auf nicht 200 prüfen
 
   split:
     dir: data/siegen/split
