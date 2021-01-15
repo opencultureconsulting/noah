@@ -12,6 +12,7 @@ tasks:
       - task: split
       - task: validate
       - task: zip
+      - task: diff
 
   harvest:
     desc: nur harvesten
@@ -87,7 +88,7 @@ tasks:
     dir: data/wuppertal/refine
     cmds:
       # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
-      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "log contains warnings!" && exit 1; fi
+      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
 
   split:
     dir: data/wuppertal/split
@@ -104,7 +105,7 @@ tasks:
       - ./*.xml
 
   validate:
-    dir: data/wuppertal/
+    dir: data/wuppertal
     cmds:
       # Validierung gegen METS Schema
       - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
@@ -115,7 +116,7 @@ tasks:
       - validate.log
 
   zip:
-    dir: data/wuppertal/
+    dir: data/wuppertal
     cmds:
       # ZIP-Archiv mit Zeitstempel erstellen
       - zip -q -FS -j wuppertal_{{.DATE}}.zip split/*.xml
@@ -123,6 +124,24 @@ tasks:
       - split/*.xml
     generates:
       - wuppertal_{{.DATE}}.zip
+
+  diff:
+    dir: data/wuppertal
+    cmds:
+      # Inhalt der beiden letzten ZIP-Archive vergleichen
+      - unzip -q -d old $(ls -t *.zip | sed -n 2p)
+      - unzip -q -d new $(ls -t *.zip | sed -n 1p)
+      - diff -d old new > diff.log || exit 0
+      - rm -rf old new
+      # Diff prüfen, ob es weniger als 500 Zeilen enthält
+      - if (( 500 < $(wc -l <diff.log) )); then echo 1>&2 "Unerwartet große Änderungen in $PWD/diff.log!" && exit 1; fi
+    sources:
+      - split/*.xml
+    generates:
+      - diff.log
+    status:
+      # Task nicht ausführen, wenn weniger als zwei ZIP-Archive vorhanden
+      - test -z $(ls -t *.zip | sed -n 2p)
 
   delete:
     desc: cache löschen
