@@ -2,12 +2,11 @@
 
 version: '3'
 
-#silent: true
 output: prefixed
 
 includes:
   siegen: ./tasks/siegen.yml
-#  wuppertal: ./tasks/wuppertal.yml
+  wuppertal: ./tasks/wuppertal.yml
 
 vars:
   DATE: '{{ now | date "2006-01-02"}}'
@@ -31,5 +30,5 @@ tasks:
       - sh: test -x "$OPENREFINE_CLIENT"
         msg: "requirement openrefine-client missing"
     deps:
-#      - task: wuppertal:default
+      - task: wuppertal:default
       - task: siegen:default

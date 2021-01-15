@@ -1,0 +1,181 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "urn",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "urn",
+    "urlExpression": "grel:'https://nbn-resolving.org/process-urn-form?identifier=' + value + '&verb=FULL&xml=on'",
+    "onError": "set-to-blank",
+    "newColumnName": "nbn-resolving",
+    "columnInsertIndex": 2,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4 [6443506]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column nbn-resolving at index 2 by fetching URLs based on column urn using expression grel:'https://nbn-resolving.org/process-urn-form?identifier=' + value + '&verb=FULL&xml=on'"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "urn",
+          "expression": "isBlank(value)",
+          "columnName": "urn",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "nbn-resolving",
+    "expression": "grel:value.parseXml().select('pidef|pidef pidef|data pidef|resolving_information pidef|url_info pidef|url')[0].htmlText()",
+    "onError": "set-to-blank",
+    "newColumnName": "url",
+    "columnInsertIndex": 3,
+    "description": "Create column url at index 3 based on column nbn-resolving using expression grel:value.parseXml().select('pidef|pidef pidef|data pidef|resolving_information pidef|url_info pidef|url')[0].htmlText()"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "nbn-resolving",
+    "description": "Remove column nbn-resolving"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "url",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),null)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column url using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),null)"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "pdf",
+    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),null)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column pdf using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),null)"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "url",
+    "expression": "grel:if(value.contains('.pdf'),value,cells['pdf'].value)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column url using expression grel:if(value.contains('.pdf'),value,cells['pdf'].value)"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "pdf",
+    "description": "Remove column pdf"
+  },
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "url",
+          "expression": "grel:row.record.cells['url'].value.join('').contains('.pdf')",
+          "columnName": "url",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]

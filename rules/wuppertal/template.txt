@@ -1,0 +1,70 @@
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <mets:dmdSec ID="DMD_wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}">
+        <mets:mdWrap MIMETYPE="text/xml" MDTYPE="MODS">
+            <mets:xmlData>
+                <mods xmlns="http://www.loc.gov/mods/v3" version="3.7"
+                    xmlns:vl="http://visuallibrary.net/vl">{{forEachIndex(cells['dc:title'].value.split('␞'), i, v, '
+                    <titleInfo' + forNonBlank(cells['dc:title/xml:lang'].value.split('␞')[i], v, ' lang="' + v.escape('xml') + '"', '') + if(i != 0, ' type="translated"', '') + '>' + forNonBlank(cells['nonsort'].value, z,'
+                        <nonSort>' + z.escape('xml') + '</nonSort>', '') + '
+                        <title>'+v.split('␟')[0].escape('xml')+'</title>'+forNonBlank(v.split('␟')[1], v, '
+                        <subTitle>' + v.escape('xml') + '</subTitle>', '')+'
+                    </titleInfo>').join('')}}
+                    <name type="personal">
+                        <displayForm>{{cells['dc:creator'].value.escape('xml')}}</displayForm>
+                        <namePart type="family">{{cells['dc:creator'].value.split(',')[0].escape('xml')}}</namePart>{{forNonBlank(cells['dc:creator'].value.split(',')[1].trim(),v,'
+                        <namePart type="given">' + v.escape('xml') + '</namePart>','')}}
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+                        </role>
+                    </name>{{forNonBlank(cells['dc:contributor'].value,x,forEach(x.split('␞'),v,'
+                    <name type="personal">
+                        <displayForm>'+ v.escape('xml') +'</displayForm>
+                        <namePart type="family">' + v.split(',')[0].escape('xml') + '</namePart>
+                        <namePart type="given">' + v.split(',')[1].trim().escape('xml') + '</namePart>
+                        <role>
+                            <roleTerm type="code" authority="marcrelator">ctb</roleTerm>
+                        </role>
+                    </name>').join(''),'')}}
+                    <typeOfResource>text</typeOfResource>
+                    <genre authority="dini">doctoralThesis</genre>{{forNonBlank(cells['dc:date'].value,v,'
+                    <originInfo>
+                        <dateIssued encoding="w3cdtf" keyDate="yes">' + v.escape('xml') + '</dateIssued>
+                    </originInfo>','')}}{{forNonBlank(cells['dc:language'].value,v,'
+                    <language>
+                        <languageTerm type="code" authority="iso639-2b">' + v.escape('xml') + '</languageTerm>
+                    </language>','')}}{{forNonBlank(cells['dc:description'].value, x, forEachIndex(x.split('␞'), i, v, '
+                    <abstract type="content"' + forNonBlank(cells['dc:description/xml:lang'].value.split('␞')[i], z, ' lang="' + z.escape('xml') + '"','') + '>' + v.escape('xml') + '</abstract>').join(''),'')}}{{forNonBlank(cells['topic'].value,x,'
+                    <subject>' + forEach(x.split('␞'),v,'
+                        <topic>' + v.escape('xml') + '</topic>').join('') + '
+                    </subject>','')}}{{forNonBlank(cells['setSpec'].value,x,forEach(x.split('␞'),v,'
+                    <classification authority="ddc">' + v.escape('xml') + '</classification>').join(''),'')}}{{forNonBlank(cells['ioo'].value,x,forEach(x.split('␞'),v,'
+                    <classification authority="ioo" displayLabel="' + v.escape('xml') + '"></classification>').join(''),'')}}
+                    <identifier type="urn">{{cells['urn'].value.escape('xml')}}</identifier>{{forNonBlank(cells['doi'].value,v,'
+                    <identifier type="doi">' + v.escape('xml') + '</identifier>','')}}{{forNonBlank(cells['hbz'].value,v,'
+                    <identifier type="sys">' + v.escape('xml') + '</identifier>','')}}{{forNonBlank(cells['cc'].value,v,'
+                    <accessCondition type="use and reproduction">' + v.escape('xml') + '</accessCondition>','')}}
+                    <recordInfo>
+                        <recordIdentifier>wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}</recordIdentifier>
+                    </recordInfo>
+                    <extension>
+                        <vl:doctype>oaDoctoralThesis</vl:doctype>
+                    </extension>
+                </mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="pdf upload">
+            <mets:file MIMETYPE="application/pdf" ID="FILE_wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}">
+                <mets:FLocat xlink:href="{{cells['url'].value.escape('xml')}}" LOCTYPE="URL"/>
+            </mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div TYPE="document" ID="wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}"
+            DMDID="DMD_wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}">
+            <mets:fptr FILEID="FILE_wuppertal_elpub_{{cells['id'].value.split(':').reverse()[0].escape('xml')}}"/>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

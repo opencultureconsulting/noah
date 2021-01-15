@@ -1,0 +1,71 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:identifier",
+          "columnName": "dc:identifier",
+          "query": "^urn:nbn",
+          "mode": "regex",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:identifier",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "urn",
+    "columnInsertIndex": 2,
+    "description": "Create column urn at index 2 based on column dc:identifier using expression grel:value"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:identifier",
+          "columnName": "dc:identifier",
+          "query": "doi.org/",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:identifier",
+    "expression": "grel:value.replace('https://doi.org/','')",
+    "onError": "set-to-blank",
+    "newColumnName": "doi",
+    "columnInsertIndex": 2,
+    "description": "Create column doi at index 2 based on column dc:identifier using expression grel:value"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:identifier",
+          "columnName": "dc:identifier",
+          "query": "\\.pdf$",
+          "mode": "regex",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:identifier",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "pdf",
+    "columnInsertIndex": 2,
+    "description": "Create column pdf at index 2 based on column dc:identifier using expression grel:value"
+  }
+]

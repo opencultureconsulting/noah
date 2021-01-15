@@ -1,0 +1,130 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    desc: harvesten und transformieren
+    deps: [harvest]
+    cmds:
+      - task: refine
+      - task: check
+      - task: split
+      - task: validate
+      - task: zip
+
+  harvest:
+    desc: nur harvesten
+    dir: data/wuppertal/harvest
+    cmds:
+      - METHA_DIR=$PWD metha-sync --format oai_dc http://elpub.bib.uni-wuppertal.de/servlets/OAIDataProvider
+      - METHA_DIR=$PWD metha-cat --format oai_dc http://elpub.bib.uni-wuppertal.de/servlets/OAIDataProvider > wuppertal.xml
+
+  refine:
+    dir: data/wuppertal/refine
+    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141 
+    env:
+      PORT: 3335
+      RAM: 8G
+      PROJECT: wuppertal
+    cmds:
+      # OpenRefine starten
+      - $OPENREFINE -v warn -p $PORT -m $RAM -d $PWD > openrefine.log 2>&1 &
+      - timeout 30s bash -c "until curl -s http://localhost:$PORT | cat | grep -q -o OpenRefine ; do sleep 1; done"
+      # Import (erfordert absoluten Pfad zur XML-Datei)
+      - $OPENREFINE_CLIENT -P $PORT --create "$(readlink -e ../harvest/wuppertal.xml)" --recordPath Records --recordPath Record --storeEmptyStrings false --trimStrings true --projectName $PROJECT
+      # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/vorverarbeitung.json $PROJECT
+      # Entfernen von HTML-Tags und Transformation von subscript und superscript in Unicode (betrifft dc:description, dc:source und dc:title)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/html.json $PROJECT
+      # DDC einheitlich auf drei Ziffern vereinheitlichen (betrifft dc:subjects und oai:setSpec)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/ddc.json $PROJECT
+      # dc:publisher setzen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/publisher.json $PROJECT
+      # URNs, DOIs und PDF-Links aus dc:identifier extrahieren
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/identifier.json $PROJECT
+      # Direktlinks generieren durch Abgleich der URNs mit nbn-resolving und Datensätze ohne Direktlink auf ein PDF löschen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/nbn.json $PROJECT
+      # Aufteilung dc:subject in ioo und topic
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/subjects.json $PROJECT
+      # Standardisierte Rechteangaben Teil 1 (Links zu CC-Lizenzen)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/rights.json $PROJECT
+      # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/join.json $PROJECT
+      # Zusammenführung gleichsprachiger Titelangaben zu Title/Subtitle
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/subtitle.json $PROJECT
+      # Sprachangaben nach ISO-639-2b (betrifft dc:language sowie die xml:lang Attribute für dc:coverage, dc:description und dc:title)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/language.json $PROJECT
+      # Standardisierte Rechteangaben Teil 2 (Canonical Name für CC-Lizenzen)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/rights-cc.json $PROJECT
+      # Anreicherung HT-Nummer via lobid-resources
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/hbz.json $PROJECT
+      # Sortierung mods:nonSort für das erste Element in dc:title
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/nonsort.json $PROJECT
+      # Links prüfen: HTTP status code ermitteln (z.B. 200)
+      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/linkcheck.json $PROJECT
+      # Export in METS:MODS mit Templating
+      - |
+        $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/wuppertal/template.txt)" --rowSeparator "
+        <!-- SPLIT -->
+        " --output wuppertal.txt $PROJECT
+      # Export für Debugging
+      - $OPENREFINE_CLIENT -P $PORT --export --output wuppertal-debug.tsv $PROJECT
+      # OpenRefine beenden
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # Statistik
+      - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
+      - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
+    sources:
+      - ../harvest/wuppertal.xml
+      - ../../../rules/wuppertal/*.json
+      - ../../../rules/wuppertal/template.txt
+#     - ../../../rules/common/*.json
+    generates:
+      - wuppertal.txt
+      - wuppertal-debug.tsv
+
+  check:
+    dir: data/wuppertal/refine
+    cmds:
+      # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
+      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "log contains warnings!" && exit 1; fi
+
+  split:
+    dir: data/wuppertal/split
+    cmds:
+      # in Einzeldateien aufteilen
+      - csplit -q ../refine/wuppertal.txt --suppress-matched '/<!-- SPLIT -->/' "{*}"
+      # ggf. vorhandene XML-Dateien löschen
+      - rm -f *.xml
+      # Identifier als Dateinamen
+      - for f in xx*; do mv "$f" "$(xmllint --xpath "//*[local-name(.) = 'recordIdentifier']/text()" "$f").xml"; done
+    sources:
+      - ../refine/wuppertal.txt
+    generates:
+      - ./*.xml
+
+  validate:
+    dir: data/wuppertal/
+    cmds:
+      # Validierung gegen METS Schema
+      - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
+      - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
+    sources:
+      - split/*.xml
+    generates:
+      - validate.log
+
+  zip:
+    dir: data/wuppertal/
+    cmds:
+      # ZIP-Archiv mit Zeitstempel erstellen
+      - zip -q -FS -j wuppertal_{{.DATE}}.zip split/*.xml
+    sources:
+      - split/*.xml
+    generates:
+      - wuppertal_{{.DATE}}.zip
+
+  delete:
+    desc: cache löschen
+    cmds:
+      - rm -rf data/wuppertal

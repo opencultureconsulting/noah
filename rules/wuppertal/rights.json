@@ -1,0 +1,25 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:rights",
+          "columnName": "dc:rights",
+          "query": "creativecommons",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:rights",
+    "expression": "grel:filter(value.ngram(1),v,v.contains('creativecommons.org'))[0].replace(/\\.$/,'').replace('(','').replace(')','').replace('http://','https://').replace('deed.de','')",
+    "onError": "set-to-blank",
+    "newColumnName": "cc",
+    "columnInsertIndex": 20,
+    "description": "Create column cc at index 20 based on column dc:rights using expression grel:filter(value.ngram(1),v,v.contains('creativecommons.org'))[0].replace(/\\.$/,'').replace('(','').replace(')','').replace('http://','https://').replace('deed.de','')"
+  }
+]

@@ -1,0 +1,15 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "url",
+    "expression": "jython:import httplib\nimport urlparse\nstatus = []\nfor x in value.split(u'\\u241e'):\n    url = urlparse.urlparse(x)\n    conn = httplib.HTTPConnection(url[1])\n    conn.request(\"HEAD\", url[2])\n    res = conn.getresponse()\n    status.append(str(res.status))\nreturn ','.join(status)",
+    "onError": "set-to-blank",
+    "newColumnName": "linkcheck",
+    "columnInsertIndex": 3,
+    "description": "Create column linkcheck at index 3 based on column url using expression jython:import httplib\nimport urlparse\nstatus = []\nfor x in value.split(u'\\u241e'):\n    url = urlparse.urlparse(x)\n    conn = httplib.HTTPConnection(url[1])\n    conn.request(\"HEAD\", url[2])\n    res = conn.getresponse()\n    status.append(str(res.status))\nreturn ','.join(status)"
+  }
+]

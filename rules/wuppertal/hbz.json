@@ -1,0 +1,49 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "urn",
+    "urlExpression": "grel:'https://lobid.org/resources/search?q=urn:\\\"' + value + '\\\"'",
+    "onError": "set-to-blank",
+    "newColumnName": "lobid",
+    "columnInsertIndex": 5,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4 [6443506]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column lobid at index 5 by fetching URLs based on column urn using expression grel:'https://lobid.org/resources/search?q=urn:\\\"' + value + '\\\"'"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "lobid",
+    "expression": "grel:value.parseJson().member[0].hbzId",
+    "onError": "set-to-blank",
+    "newColumnName": "hbz",
+    "columnInsertIndex": 6,
+    "description": "Create column hbz at index 6 based on column lobid using expression grel:value.parseJson().member[0].hbzId"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "lobid",
+    "description": "Remove column lobid"
+  }
+]

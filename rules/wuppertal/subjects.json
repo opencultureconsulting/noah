@@ -1,0 +1,48 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:subject",
+          "columnName": "dc:subject",
+          "query": "Fakultät",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:subject",
+    "expression": "grel:value.replace(' » Dissertationen','')",
+    "onError": "set-to-blank",
+    "newColumnName": "ioo",
+    "columnInsertIndex": 5,
+    "description": "Create column ioo at index 5 based on column dc:subject using expression grel:value.replace(' » Dissertationen','')"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "dc:subject",
+          "columnName": "dc:subject",
+          "query": "Fakultät",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": true
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:subject",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "topic",
+    "columnInsertIndex": 5,
+    "description": "Create column topic at index 5 based on column dc:subject using expression grel:value"
+  }
+]

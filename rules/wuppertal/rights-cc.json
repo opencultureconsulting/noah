@@ -1,0 +1,15 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "cc",
+    "expression": "grel:value.replace('https://creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column cc using expression grel:value.replace('https://creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()"
+  }
+]

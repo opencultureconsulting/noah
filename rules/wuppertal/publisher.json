@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "dc:identifier",
+    "expression": "grel:\"Bergische Universität Wuppertal\"",
+    "onError": "set-to-blank",
+    "newColumnName": "dc:publisher",
+    "columnInsertIndex": 2,
+    "description": "Create column dc:publisher at index 2 based on column dc:identifier using expression grel:\"Bergische Universität Wuppertal\""
+  }
+]
