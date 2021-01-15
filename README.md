@@ -1,7 +1,7 @@
 # Datenintegration für noah.nrw
 Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das Portal [noah.nrw](https://noah.nrw/)
 
-> **:warning: Dies ist ein Prototyp für die Beta-Version des Portals noah.nrw; für den Produktivbetrieb ist der Einsatz von [metafacture](https://github.com/metafacture) geplant.**
+**:warning: Dies ist ein Prototyp für die Beta-Version des Portals.**
 
 ## Datenfluss
 
@@ -11,6 +11,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 * Harvesting (mit Cache): [metha](https://github.com/miku/metha/)
 * Transformation: [OpenRefine](https://github.com/OpenRefine/OpenRefine) und [openrefine-client](https://github.com/opencultureconsulting/openrefine-client)
+  * :warning: Für den Produktivbetrieb ist der Einsatz von [metafacture](https://github.com/metafacture) geplant.
 * Task Runner: [Task](https://github.com/go-task/task)
 
 ## Systemvoraussetzungen
@@ -39,7 +40,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     # Zeitraum für automatisches Speichern von 5 Minuten auf 25 Stunden erhöhen
     sed -i 's/#REFINE_AUTOSAVE_PERIOD=60/REFINE_AUTOSAVE_PERIOD=1440/' "openrefine/refine.ini"
     ```
-    
+
 3. [openrefine-client 0.3.10](https://github.com/opencultureconsulting/openrefine-client/releases/tag/v0.3.10)
 
     ```sh
@@ -48,35 +49,35 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     wget -O openrefine/openrefine-client https://github.com/opencultureconsulting/openrefine-client/releases/download/v0.3.10/openrefine-client_0-3-10_linux
     chmod +x openrefine/openrefine-client
     ```
-    
+
 4. [metha 0.2.20](https://github.com/miku/metha/releases/tag/v0.2.20)
 
-	a) RPM-basiert (Fedora, CentOS, SLES, etc.)
+    a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
     ```sh
     wget https://github.com/miku/metha/releases/download/v0.2.20/metha-0.2.20-0.x86_64.rpm
     sudo dnf install ./metha-0.2.20-0.x86_64.rpm && rm metha-0.2.20-0.x86_64.rpm
     ```
-   
-b) DEB-basiert (Debian, Ubuntu etc.)
-	
- ```sh
+
+    b) DEB-basiert (Debian, Ubuntu etc.)
+
+    ```sh
     wget https://github.com/miku/metha/releases/download/v0.2.20/metha_0.2.20_amd64.deb
     sudo apt install ./metha_0.2.20_amd64.deb && rm metha_0.2.20_amd64.deb
     ```
-   
+
 5. [Task 3.2.2](https://github.com/go-task/task/releases/tag/v3.2.2)
 
-	a) RPM-basiert (Fedora, CentOS, SLES, etc.)
+    a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
     ```sh
     wget https://github.com/go-task/task/releases/download/v3.2.2/task_linux_amd64.rpm
     sudo dnf install ./task_linux_amd64.rpm && rm task_linux_amd64.rpm
     ```
-   
-b) DEB-basiert (Debian, Ubuntu etc.)
-	
- ```sh
+
+    b) DEB-basiert (Debian, Ubuntu etc.)
+
+    ```sh
     wget https://github.com/go-task/task/releases/download/v3.2.2/task_linux_amd64.deb
     sudo apt install ./task_linux_amd64.deb && rm task_linux_amd64.deb
     ```
@@ -85,27 +86,27 @@ b) DEB-basiert (Debian, Ubuntu etc.)
 
 * Alle Datenquellen harvesten und transformieren (parallelisiert)
 
-  ```
-  task default
-  ```
+    ```
+    task default
+    ```
 
 * Eine Datenquelle harvesten und transformieren
 
-  ```
-  task siegen:default
-  ```
+    ```
+    task siegen:default
+    ```
 
 * Cache einer Datenquelle löschen
 
-  ```
-  task siegen:delete
-  ```
+    ```
+    task siegen:delete
+    ```
 
 * Verfügbare Tasks auflisten
 
-  ```
-  task --list
-  ```
+    ```
+    task --list
+    ```
 
 ## Konfiguration
 
