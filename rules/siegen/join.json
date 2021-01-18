@@ -650,19 +650,6 @@
     "description": "Text transform on cells in column doctype using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
   },
   {
-    "op": "core/text-transform",
-    "engineConfig": {
-      "facets": [],
-      "mode": "row-based"
-    },
-    "columnName": "linkcheck",
-    "expression": "grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')",
-    "onError": "keep-original",
-    "repeat": false,
-    "repeatCount": 10,
-    "description": "Text transform on cells in column linkcheck using expression grel:if(isNonBlank(cells['id'].value),row.record.cells[columnName].value.join('␞'),'')"
-  },
-  {
     "op": "core/row-removal",
     "engineConfig": {
       "facets": [

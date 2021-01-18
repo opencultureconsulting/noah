@@ -96,6 +96,12 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     task siegen:default
     ```
 
+* Links einer Datenquelle überprüfen
+
+    ```
+    task siegen:linkcheck
+    ```
+
 * Cache einer Datenquelle löschen
 
     ```
