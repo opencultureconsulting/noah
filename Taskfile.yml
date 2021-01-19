@@ -40,46 +40,42 @@ tasks:
   check:
     dir: data/{{.PROJECT}}/refine
     cmds:
+      - test -n "{{.PROJECT}}"; test -n "{{.MINIMUM}}"
       # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
       - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
       # Prüfen, ob Mindestanzahl von 1250 Datensätzen generiert wurde
       - if (( {{.MINIMUM}} > $(grep -c recordIdentifier {{.PROJECT}}.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/{{.PROJECT}}.txt!" && exit 1; fi
-    preconditions:
-      - test -n "{{.PROJECT}}"
-      - test -n "{{.MINIMUM}}"
 
   split:
     dir: data/{{.PROJECT}}/split
     cmds:
+      - test -n "{{.PROJECT}}"
       # in Einzeldateien aufteilen
       - csplit -q ../refine/{{.PROJECT}}.txt --suppress-matched '/<!-- SPLIT -->/' "{*}"
       # ggf. vorhandene XML-Dateien löschen
       - rm -f *.xml
       # Identifier als Dateinamen
       - for f in xx*; do mv "$f" "$(xmllint --xpath "//*[local-name(.) = 'recordIdentifier']/text()" "$f").xml"; done
-    preconditions:
-      - test -n "{{.PROJECT}}"
 
   validate:
     dir: data/{{.PROJECT}}
     cmds:
+      - test -n "{{.PROJECT}}"
       # Validierung gegen METS Schema
       - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
       - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
-    preconditions:
-      - test -n "{{.PROJECT}}"
 
   zip:
     dir: data/{{.PROJECT}}
     cmds:
+      - test -n "{{.PROJECT}}"
       # ZIP-Archiv mit Zeitstempel erstellen
       - zip -q -FS -j {{.PROJECT}}_{{.DATE}}.zip split/*.xml
-    preconditions:
-      - test -n "{{.PROJECT}}"
 
   diff:
     dir: data/{{.PROJECT}}
     cmds:
+      - test -n "{{.PROJECT}}"
       # Inhalt der beiden letzten ZIP-Archive vergleichen
       - unzip -q -d old $(ls -t *.zip | sed -n 2p)
       - unzip -q -d new $(ls -t *.zip | sed -n 1p)
@@ -92,12 +88,11 @@ tasks:
     status:
       # Task nicht ausführen, wenn weniger als zwei ZIP-Archive vorhanden
       - test -z $(ls -t *.zip | sed -n 2p)
-    preconditions:
-      - test -n "{{.PROJECT}}"
 
   linkcheck:
     dir: data/{{.PROJECT}}
     cmds:
+      - test -n "{{.PROJECT}}"
       # Links extrahieren
       - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 > links.txt
       # http status code aller Links ermitteln
@@ -105,14 +100,11 @@ tasks:
       - rm -rf links.txt
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
-    preconditions:
-      - test -n "{{.PROJECT}}"
 
   delete:
     dir: data/{{.PROJECT}}
     cmds:
+      - test -n "{{.PROJECT}}"
       - rm -rf harvest
       - rm -rf refine
       - rm -rf split
-    preconditions:
-      - test -n "{{.PROJECT}}"
