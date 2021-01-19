@@ -63,6 +63,7 @@ tasks:
       - |
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/siegen/template.txt)" --rowSeparator "
         <!-- SPLIT -->
+        " --suffix "
         " --output siegen.txt $PROJECT
       # Statistik zu Laufzeit und Ressourcenverbrauch
       - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT)

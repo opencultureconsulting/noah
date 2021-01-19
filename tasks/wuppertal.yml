@@ -66,6 +66,7 @@ tasks:
       - |
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/wuppertal/template.txt)" --rowSeparator "
         <!-- SPLIT -->
+        " --suffix "
         " --output wuppertal.txt $PROJECT
       # Statistik zu Laufzeit und Ressourcenverbrauch
       - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT)
