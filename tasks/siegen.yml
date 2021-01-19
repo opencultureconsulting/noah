@@ -3,22 +3,16 @@
 version: '3'
 
 tasks:
-  # Tasks mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
   default:
     desc: OPUS Siegen
     deps: [harvest]
     cmds:
       - task: refine
-      - task: :check
-        vars: {PROJECT: "siegen", MINIMUM: "1250"}
-      - task: :split
-        vars: {PROJECT: "siegen"}
-      - task: :validate
-        vars: {PROJECT: "siegen"}
-      - task: :zip
-        vars: {PROJECT: "siegen"}
-      - task: :diff
-        vars: {PROJECT: "siegen"}
+      - task: check
+      - task: split
+      - task: validate
+      - task: zip
+      - task: diff
 
   harvest:
     dir: data/siegen/harvest
@@ -77,6 +71,7 @@ tasks:
       - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
       - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
     sources:
+      # wenn "dir:" für task gesetzt ist, dann relative Links ausgehend von dir
       - ../harvest/siegen.xml
       - ../../../rules/siegen/*.json
       - ../../../rules/siegen/template.txt
@@ -85,11 +80,61 @@ tasks:
       - siegen.txt
       - siegen-debug.tsv
 
+  check:
+    cmds:
+      # Tasks mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
+      - task: :check
+        vars: {PROJECT: "siegen", MINIMUM: "1250"}
+    sources:
+      # wenn "dir:" für task nicht gesetzt ist, dann relative Links ausgehend von Taskfile.yml
+      - data/siegen/refine/openrefine.log
+      - data/siegen/refine/siegen.txt
+
+  split:
+    cmds:
+      - task: :split
+        vars: {PROJECT: "siegen"}
+    sources:
+      - data/siegen/refine/siegen.txt
+    generates:
+      - data/siegen/split/*.xml
+
+  validate:
+    cmds:
+      - task: :validate
+        vars: {PROJECT: "siegen"}
+    sources:
+      - data/siegen/split/*.xml
+    generates:
+      - data/siegen/validate.log
+
+  zip:
+    cmds:
+      - task: :zip
+        vars: {PROJECT: "siegen"}
+    sources:
+      - data/siegen/split/*.xml
+    generates:
+      - data/siegen/siegen_{{.DATE}}.zip
+
+  diff:
+    cmds:
+      - task: :diff
+        vars: {PROJECT: "siegen"}
+    sources:
+      - data/siegen/split/*.xml
+    generates:
+      - data/siegen/diff.log
+
   linkcheck:
     desc: OPUS Siegen links überprüfen
     cmds:
       - task: :linkcheck
         vars: {PROJECT: "siegen"}
+    sources:
+      - data/siegen/split/*.xml
+    generates:
+      - data/siegen/linkcheck.log
 
   delete:
     desc: OPUS Siegen cache löschen

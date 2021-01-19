@@ -9,16 +9,11 @@ tasks:
     deps: [harvest]
     cmds:
       - task: refine
-      - task: :check
-        vars: {PROJECT: "wuppertal", MINIMUM: "1300"}
-      - task: :split
-        vars: {PROJECT: "wuppertal"}
-      - task: :validate
-        vars: {PROJECT: "wuppertal"}
-      - task: :zip
-        vars: {PROJECT: "wuppertal"}
-      - task: :diff
-        vars: {PROJECT: "wuppertal"}
+      - task: check
+      - task: split
+      - task: validate
+      - task: zip
+      - task: diff
 
   harvest:
     dir: data/wuppertal/harvest
@@ -79,6 +74,7 @@ tasks:
       - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
       - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
     sources:
+      # wenn "dir:" für task gesetzt ist, dann relative Links ausgehend von dir
       - ../harvest/wuppertal.xml
       - ../../../rules/wuppertal/*.json
       - ../../../rules/wuppertal/template.txt
@@ -87,11 +83,62 @@ tasks:
       - wuppertal.txt
       - wuppertal-debug.tsv
 
+  check:
+    cmds:
+      # Tasks mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
+      - task: :check
+        vars: {PROJECT: "wuppertal", MINIMUM: "1300"}
+    sources:
+      # wenn "dir:" für task nicht gesetzt ist, dann relative Links ausgehend von Taskfile.yml
+      - data/wuppertal/refine/openrefine.log
+      - data/wuppertal/refine/siegen.txt
+
+  split:
+    cmds:
+      - task: :split
+        vars: {PROJECT: "wuppertal"}
+    sources:
+      # wenn "dir:" für task nicht gesetzt ist, dann relative Links ausgehend von Taskfile.yml
+      - data/wuppertal/refine/wuppertal.txt
+    generates:
+      - data/wuppertal/split/*.xml
+
+  validate:
+    cmds:
+      - task: :validate
+        vars: {PROJECT: "wuppertal"}
+    sources:
+      - data/wuppertal/split/*.xml
+    generates:
+      - data/wuppertal/validate.log
+
+  zip:
+    cmds:
+      - task: :zip
+        vars: {PROJECT: "wuppertal"}
+    sources:
+      - data/wuppertal/split/*.xml
+    generates:
+      - data/wuppertal/wuppertal_{{.DATE}}.zip
+
+  diff:
+    cmds:
+      - task: :diff
+        vars: {PROJECT: "wuppertal"}
+    sources:
+      - data/wuppertal/split/*.xml
+    generates:
+      - data/wuppertal/diff.log
+
   linkcheck:
     desc: Elpub Wuppertal links überprüfen
     cmds:
       - task: :linkcheck
         vars: {PROJECT: "wuppertal"}
+    sources:
+      - data/wuppertal/split/*.xml
+    generates:
+      - data/wuppertal/linkcheck.log
 
   delete:
     desc: Elpub Wuppertal cache löschen
