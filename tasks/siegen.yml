@@ -4,7 +4,7 @@ version: '3'
 
 tasks:
   default:
-    desc: harvesten und transformieren
+    desc: OPUS Siegen harvesten und transformieren
     deps: [harvest]
     cmds:
       - task: refine
@@ -15,7 +15,6 @@ tasks:
       - task: diff
 
   harvest:
-    desc: nur harvesten
     dir: data/siegen/harvest
     cmds:
       - METHA_DIR=$PWD metha-sync --format xMetaDissPlus https://dspace.ub.uni-siegen.de/oai/request
@@ -23,10 +22,10 @@ tasks:
 
   refine:
     dir: data/siegen/refine
-    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141 
+    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141
     env:
       PORT: 3334
-      RAM: 8G
+      RAM: 4G
       PROJECT: siegen
     cmds:
       # OpenRefine starten
@@ -86,7 +85,7 @@ tasks:
       # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
       - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
       # Prüfen, ob Mindestanzahl von 1250 Datensätzen generiert wurde
-      - if (( 1250 > $(grep -c recordIdentifier siegen.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/wuppertal.txt!" && exit 1; fi
+      - if (( 1250 > $(grep -c recordIdentifier siegen.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/siegen.txt!" && exit 1; fi
 
   split:
     dir: data/siegen/split
@@ -147,8 +146,9 @@ tasks:
     cmds:
       # Links extrahieren
       - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 > links.txt
-      # http status code aller Links ermitteln 
+      # http status code aller Links ermitteln
       - curl --silent --head --write-out "%{http_code} %{url_effective}\n" $(while read line; do echo "-o /dev/null $line"; done < links.txt) > linkcheck.log
+      - rm -rf links.txt
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
     sources:
@@ -157,6 +157,8 @@ tasks:
       - linkcheck.log
 
   delete:
-    desc: harvesting cache löschen
+    desc: cache löschen
     cmds:
       - rm -rf data/siegen/harvest
+      - rm -rf data/siegen/refine
+      - rm -rf data/siegen/split

@@ -4,7 +4,7 @@ version: '3'
 
 tasks:
   default:
-    desc: harvesten und transformieren
+    desc: Elpub Wuppertal harvesten und transformieren
     deps: [harvest]
     cmds:
       - task: refine
@@ -15,7 +15,6 @@ tasks:
       - task: diff
 
   harvest:
-    desc: nur harvesten
     dir: data/wuppertal/harvest
     cmds:
       - METHA_DIR=$PWD metha-sync --format oai_dc http://elpub.bib.uni-wuppertal.de/servlets/OAIDataProvider
@@ -23,10 +22,10 @@ tasks:
 
   refine:
     dir: data/wuppertal/refine
-    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141 
+    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141
     env:
       PORT: 3335
-      RAM: 8G
+      RAM: 4G
       PROJECT: wuppertal
     cmds:
       # OpenRefine starten
@@ -62,8 +61,6 @@ tasks:
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/hbz.json $PROJECT
       # Sortierung mods:nonSort für das erste Element in dc:title
       - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/nonsort.json $PROJECT
-#TODO      # Links prüfen: HTTP status code ermitteln (z.B. 200)
-#TODO      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/wuppertal/linkcheck.json $PROJECT
       # Export in METS:MODS mit Templating
       - |
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/wuppertal/template.txt)" --rowSeparator "
@@ -153,6 +150,7 @@ tasks:
       - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 > links.txt
       # http status code aller Links ermitteln
       - curl --silent --head --write-out "%{http_code} %{url_effective}\n" $(while read line; do echo "-o /dev/null $line"; done < links.txt) > linkcheck.log
+      - rm -rf links.txt
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
     sources:
@@ -161,6 +159,8 @@ tasks:
       - linkcheck.log
 
   delete:
-    desc: harvesting cache löschen
+    desc: cache löschen
     cmds:
       - rm -rf data/wuppertal/harvest
+      - rm -rf data/wuppertal/refine
+      - rm -rf data/wuppertal/split

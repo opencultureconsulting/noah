@@ -84,16 +84,22 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Nutzung
 
-* Alle Datenquellen harvesten und transformieren (parallelisiert)
+* Alle Datenquellen harvesten, transformieren und validieren (parallelisiert)
 
     ```
-    task default
+    task
     ```
 
-* Eine Datenquelle harvesten und transformieren
+* Eine Datenquelle harvesten, transformieren und validieren
 
     ```
     task siegen:default
+    ```
+
+* Zwei Datenquellen harvesten, transformieren und validieren (parallelisiert)
+
+    ```
+    task --parallel siegen:default wuppertal:default
     ```
 
 * Links einer Datenquelle überprüfen
@@ -116,7 +122,6 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Konfiguration
 
-* Umgebungsvariablen in [Taskfile.yml](Taskfile.yml)
 * Workflow für die Datenquellen in [tasks](tasks)
   * Beispiel: [tasks/siegen.yml](tasks/siegen.yml)
 * OpenRefine-Transformationsregeln in [rules](rules)

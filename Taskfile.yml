@@ -29,6 +29,10 @@ tasks:
         msg: "requirement OpenRefine missing"
       - sh: test -x "$OPENREFINE_CLIENT"
         msg: "requirement openrefine-client missing"
+      - sh: test -n "$(command -v curl)"
+        msg: "requirement curl missing"
+      - sh: test -n "$(command -v xmllint)"
+        msg: "requirement xmllint missing"
     deps:
       - task: wuppertal:default
       - task: siegen:default
