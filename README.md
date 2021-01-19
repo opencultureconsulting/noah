@@ -122,10 +122,11 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Konfiguration
 
-* Workflow für die Datenquellen in [tasks](tasks)
+* Workflow für die jeweilige Datenquelle in [tasks](tasks)
   * Beispiel: [tasks/siegen.yml](tasks/siegen.yml)
 * OpenRefine-Transformationsregeln in [rules](rules)
   * Beispiel: [rules/siegen/hbz.json](rules/siegen/hbz.json)
+* Allgemeine Tasks (z.B. Validierung) in [Taskfile.yml](Taskfile.yml)
 
 ## Known Issues
 

@@ -19,7 +19,7 @@ env:
 
 tasks:
   default:
-    desc: alle Datenquellen harvesten und transformieren (parallel)
+    desc: alle Datenquellen (parallel)
     preconditions:
       - sh: test -n "$(command -v metha-sync)"
         msg: "requirement metha missing"
@@ -36,3 +36,101 @@ tasks:
     deps:
       - task: wuppertal:default
       - task: siegen:default
+
+  check:
+    dir: data/{{.PROJECT}}/refine
+    cmds:
+      # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
+      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
+      # Prüfen, ob Mindestanzahl von 1250 Datensätzen generiert wurde
+      - if (( {{.MINIMUM}} > $(grep -c recordIdentifier {{.PROJECT}}.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/{{.PROJECT}}.txt!" && exit 1; fi
+    preconditions:
+      - test -n "{{.PROJECT}}"
+      - test -n "{{.MINIMUM}}"
+
+  split:
+    dir: data/{{.PROJECT}}/split
+    cmds:
+      # in Einzeldateien aufteilen
+      - csplit -q ../refine/{{.PROJECT}}.txt --suppress-matched '/<!-- SPLIT -->/' "{*}"
+      # ggf. vorhandene XML-Dateien löschen
+      - rm -f *.xml
+      # Identifier als Dateinamen
+      - for f in xx*; do mv "$f" "$(xmllint --xpath "//*[local-name(.) = 'recordIdentifier']/text()" "$f").xml"; done
+    sources:
+      - ../refine/{{.PROJECT}}.txt
+    generates:
+      - ./*.xml
+    preconditions:
+      - test -n "{{.PROJECT}}"
+
+  validate:
+    dir: data/{{.PROJECT}}
+    cmds:
+      # Validierung gegen METS Schema
+      - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
+      - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
+    sources:
+      - split/*.xml
+    generates:
+      - validate.log
+    preconditions:
+      - test -n "{{.PROJECT}}"
+
+  zip:
+    dir: data/{{.PROJECT}}
+    cmds:
+      # ZIP-Archiv mit Zeitstempel erstellen
+      - zip -q -FS -j {{.PROJECT}}_{{.DATE}}.zip split/*.xml
+    sources:
+      - split/*.xml
+    generates:
+      - "{{.PROJECT}}_{{.DATE}}.zip"
+    preconditions:
+      - test -n "{{.PROJECT}}"
+
+  diff:
+    dir: data/{{.PROJECT}}
+    cmds:
+      # Inhalt der beiden letzten ZIP-Archive vergleichen
+      - unzip -q -d old $(ls -t *.zip | sed -n 2p)
+      - unzip -q -d new $(ls -t *.zip | sed -n 1p)
+      - diff -d old new > diff.log || exit 0
+      - rm -rf old new
+      # Diff prüfen, ob es weniger als 500 Zeilen enthält
+      - if (( 500 < $(wc -l <diff.log) )); then echo 1>&2 "Unerwartet große Änderungen in $PWD/diff.log!" && exit 1; fi
+    sources:
+      - split/*.xml
+    generates:
+      - diff.log
+    status:
+      # Task nicht ausführen, wenn weniger als zwei ZIP-Archive vorhanden
+      - test -z $(ls -t *.zip | sed -n 2p)
+    preconditions:
+      - test -n "{{.PROJECT}}"
+
+  linkcheck:
+    dir: data/{{.PROJECT}}
+    cmds:
+      # Links extrahieren
+      - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 > links.txt
+      # http status code aller Links ermitteln
+      - curl --silent --head --write-out "%{http_code} %{url_effective}\n" $(while read line; do echo "-o /dev/null $line"; done < links.txt) > linkcheck.log
+      - rm -rf links.txt
+      # Logdatei auf status code != 2XX prüfen
+      - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
+    sources:
+      - split/*.xml
+    generates:
+      - linkcheck.log
+    preconditions:
+      - test -n "{{.PROJECT}}"
+
+  delete:
+    dir: data/{{.PROJECT}}
+    cmds:
+      - rm -rf harvest
+      - rm -rf refine
+      - rm -rf split
+    preconditions:
+      - test -n "{{.PROJECT}}"
