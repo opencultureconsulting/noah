@@ -67,21 +67,24 @@ tasks:
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/wuppertal/template.txt)" --rowSeparator "
         <!-- SPLIT -->
         " --output wuppertal.txt $PROJECT
-      # Export für Debugging
-      - $OPENREFINE_CLIENT -P $PORT --export --output wuppertal-debug.tsv $PROJECT
+      # Statistik zu Laufzeit und Ressourcenverbrauch
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT)
       # OpenRefine beenden
-      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # Statistik
-      - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
-      - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
+      - PID=$(lsof -t -i:$PORT); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
+      # OpenRefine-Projekt für Debugging archivieren
+      - tar cfz wuppertal.openrefine.tar.gz -C $(grep -l wuppertal *.project/metadata.json | cut -d '/' -f 1) .
+      # Temporäre Dateien löschen
+      - rm -rf ./*.project* && rm -f workspace.json
     sources:
       # wenn "dir:" für task gesetzt ist, dann relative Links ausgehend von dir
       - ../harvest/wuppertal.xml
       - ../../../rules/wuppertal/*.json
       - ../../../rules/wuppertal/template.txt
-#     - ../../../rules/common/*.json
+#TODO - ../../../rules/common/*.json
     generates:
+      - openrefine.log
       - wuppertal.txt
-      - wuppertal-debug.tsv
+      - wuppertal.openrefine.tar.gz
 
   check:
     cmds:
@@ -91,14 +94,13 @@ tasks:
     sources:
       # wenn "dir:" für task nicht gesetzt ist, dann relative Links ausgehend von Taskfile.yml
       - data/wuppertal/refine/openrefine.log
-      - data/wuppertal/refine/siegen.txt
+      - data/wuppertal/refine/wuppertal.txt
 
   split:
     cmds:
       - task: :split
         vars: {PROJECT: "wuppertal"}
     sources:
-      # wenn "dir:" für task nicht gesetzt ist, dann relative Links ausgehend von Taskfile.yml
       - data/wuppertal/refine/wuppertal.txt
     generates:
       - data/wuppertal/split/*.xml

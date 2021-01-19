@@ -64,21 +64,24 @@ tasks:
         $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/siegen/template.txt)" --rowSeparator "
         <!-- SPLIT -->
         " --output siegen.txt $PROJECT
-      # Export für Debugging
-      - $OPENREFINE_CLIENT -P $PORT --export --output siegen-debug.tsv $PROJECT
+      # Statistik zu Laufzeit und Ressourcenverbrauch
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT)
       # OpenRefine beenden
-      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT) # Statistik
-      - kill -9 $(lsof -t -i:$PORT) # SIGKILL (-9) verhindert unnötigen Speichervorgang
-      - rm -rf ./*.project* && rm -f workspace.json # temporäre Dateien von OpenRefine löschen
+      - PID=$(lsof -t -i:$PORT); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
+      # OpenRefine-Projekt für Debugging archivieren
+      - tar cfz siegen.openrefine.tar.gz -C $(grep -l siegen *.project/metadata.json | cut -d '/' -f 1) .
+      # Temporäre Dateien löschen
+      - rm -rf ./*.project* && rm -f workspace.json
     sources:
       # wenn "dir:" für task gesetzt ist, dann relative Links ausgehend von dir
       - ../harvest/siegen.xml
       - ../../../rules/siegen/*.json
       - ../../../rules/siegen/template.txt
-#     - ../../../rules/common/*.json
+#TODO - ../../../rules/common/*.json
     generates:
+      - openrefine.log
       - siegen.txt
-      - siegen-debug.tsv
+      - siegen.openrefine.tar.gz
 
   check:
     cmds:
