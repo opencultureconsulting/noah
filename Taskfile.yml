@@ -38,6 +38,7 @@ tasks:
       - task: siegen:default
 
   check:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}/refine
     cmds:
       - test -n "{{.PROJECT}}"; test -n "{{.MINIMUM}}"
@@ -45,8 +46,12 @@ tasks:
       - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
       # Prüfen, ob Mindestanzahl von 1250 Datensätzen generiert wurde
       - if (( {{.MINIMUM}} > $(grep -c recordIdentifier {{.PROJECT}}.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/{{.PROJECT}}.txt!" && exit 1; fi
+    sources:
+      - openrefine.log
+      - '{{.PROJECT}}.txt'
 
   split:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}/split
     cmds:
       - test -n "{{.PROJECT}}"
@@ -62,6 +67,7 @@ tasks:
       - ./*.xml
 
   validate:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
@@ -74,6 +80,7 @@ tasks:
       - validate.log
 
   zip:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
@@ -82,9 +89,10 @@ tasks:
     sources:
       - split/*.xml
     generates:
-      - "{{.PROJECT}}_{{.DATE}}.zip"
+      - '{{.PROJECT}}_{{.DATE}}.zip'
 
   diff:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
@@ -106,6 +114,7 @@ tasks:
       - test -z $(ls -t *.zip | sed -n 2p)
 
   linkcheck:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
@@ -122,6 +131,7 @@ tasks:
       - linkcheck.log
 
   delete:
+    label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
