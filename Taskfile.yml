@@ -97,8 +97,7 @@ tasks:
     cmds:
       - test -n "{{.PROJECT}}"
       # Inhalt der beiden letzten ZIP-Archive vergleichen
-      - unzip -q -d old $(ls -t *.zip | sed -n 2p)
-      - unzip -q -d new $(ls -t *.zip | sed -n 1p)
+      - if test -n "$(ls -t *.zip | sed -n 2p)"; then unzip -q -d old $(ls -t *.zip | sed -n 2p); unzip -q -d new $(ls -t *.zip | sed -n 1p); fi
       - diff -d old new > diff.log || exit 0
       - rm -rf old new
       # Diff prüfen, ob es weniger als 500 Zeilen enthält
@@ -109,9 +108,6 @@ tasks:
       - split/*.xml
     generates:
       - diff.log
-    status:
-      # Task nicht ausführen, wenn weniger als zwei ZIP-Archive vorhanden
-      - test -z $(ls -t *.zip | sed -n 2p)
 
   linkcheck:
     label: '{{.TASK}}-{{.PROJECT}}'
