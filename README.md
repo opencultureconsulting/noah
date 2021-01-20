@@ -84,6 +84,12 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Nutzung
 
+* Vorab ggf. ulimit erhöhen, um Abbruch durch "too many open files" zu vermeiden
+
+    ```
+    ulimit -n 10000
+    ```
+
 * Alle Datenquellen harvesten, transformieren und validieren (parallelisiert)
 
     ```
@@ -127,14 +133,6 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 * OpenRefine-Transformationsregeln in [rules](rules)
   * Beispiel: [rules/siegen/hbz.json](rules/siegen/hbz.json)
 * Allgemeine Tasks (z.B. Validierung) in [Taskfile.yml](Taskfile.yml)
-
-## Known Issues
-
-> too many open files
-
-```
-ulimit -n 10000
-```
 
 ## OAI-PMH Data Provider
 
