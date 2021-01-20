@@ -37,6 +37,30 @@ tasks:
       - task: wuppertal:default
       - task: siegen:default
 
+  openrefine-start:
+    label: '{{.TASK}}-{{.PROJECT}}'
+    dir: data/{{.PROJECT}}/refine
+    cmds:
+      - test -n "{{.PROJECT}}"; test -n "{{.PORT}}"; test -n "{{.RAM}}"
+      # OpenRefine starten und Logdatei schreiben für spätere checks
+      - $OPENREFINE -v warn -p {{.PORT}} -m {{.RAM}} -d $PWD > openrefine.log 2>&1 &
+      # Warten bis OpenRefine erreichbar ist
+      - timeout 30s bash -c "until curl -s http://localhost:{{.PORT}} | cat | grep -q -o OpenRefine ; do sleep 1; done"
+
+  openrefine-stop:
+    label: '{{.TASK}}-{{.PROJECT}}'
+    dir: data/{{.PROJECT}}/refine
+    cmds:
+      - test -n "{{.PROJECT}}"; test -n "{{.PORT}}"
+      # Statistik zu Laufzeit und Ressourcenverbrauch
+      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:{{.PORT}})
+      # OpenRefine herunterfahren
+      - PID=$(lsof -t -i:{{.PORT}}); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
+      # OpenRefine-Projekt für Debugging archivieren
+      - tar cfz {{.PROJECT}}.openrefine.tar.gz -C $(grep -l {{.PROJECT}} *.project/metadata.json | cut -d '/' -f 1) .
+      # Temporäre Dateien löschen
+      - rm -rf ./*.project* && rm -f workspace.json
+
   check:
     label: '{{.TASK}}-{{.PROJECT}}'
     dir: data/{{.PROJECT}}/refine

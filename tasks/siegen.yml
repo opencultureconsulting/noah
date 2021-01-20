@@ -3,91 +3,91 @@
 version: '3'
 
 tasks:
-  # Tasks mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
   default:
     desc: OPUS Siegen
-    deps: [harvest]
+    vars:
+      PROJECT: siegen
+      MINIMUM: 1250 # Mindestanzahl der zu erwartenden Datensätze
     cmds:
+      - task: harvest
       - task: refine
+      # Folgende Tasks beginnend mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
       - task: :check
-        vars: {PROJECT: "siegen", MINIMUM: "1250"}
+        vars: {PROJECT: '{{.PROJECT}}', MINIMUM: '{{.MINIMUM}}'}
       - task: :split
-        vars: {PROJECT: "siegen"}
+        vars: {PROJECT: '{{.PROJECT}}'}
       - task: :validate
-        vars: {PROJECT: "siegen"}
+        vars: {PROJECT: '{{.PROJECT}}'}
       - task: :zip
-        vars: {PROJECT: "siegen"}
+        vars: {PROJECT: '{{.PROJECT}}'}
       - task: :diff
-        vars: {PROJECT: "siegen"}
+        vars: {PROJECT: '{{.PROJECT}}'}
 
   harvest:
-    dir: data/siegen/harvest
+    dir: data/{{.PROJECT}}/harvest
+    vars:
+      URL: https://dspace.ub.uni-siegen.de/oai/request
+      FORMAT: xMetaDissPlus
+      PROJECT: siegen
     cmds:
-      - METHA_DIR=$PWD metha-sync --format xMetaDissPlus https://dspace.ub.uni-siegen.de/oai/request
-      - METHA_DIR=$PWD metha-cat --format xMetaDissPlus https://dspace.ub.uni-siegen.de/oai/request > siegen.xml
+      - METHA_DIR=$PWD metha-sync --format {{.FORMAT}} {{.URL}}
+      - METHA_DIR=$PWD metha-cat --format {{.FORMAT}} {{.URL}} > {{.PROJECT}}.xml
 
   refine:
-    dir: data/siegen/refine
+    dir: data/{{.PROJECT}}/refine
     ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141
-    env:
+    vars:
       PORT: 3334
       RAM: 4G
       PROJECT: siegen
     cmds:
-      # OpenRefine starten
-      - $OPENREFINE -v warn -p $PORT -m $RAM -d $PWD > openrefine.log 2>&1 &
-      - timeout 30s bash -c "until curl -s http://localhost:$PORT | cat | grep -q -o OpenRefine ; do sleep 1; done"
+      - task: :openrefine-start
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}', RAM: '{{.RAM}}'}
       # Import (erfordert absoluten Pfad zur XML-Datei)
-      - $OPENREFINE_CLIENT -P $PORT --create "$(readlink -e ../harvest/siegen.xml)" --recordPath Records --recordPath Record --storeEmptyStrings false --trimStrings true --projectName $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --create "$(readlink -e ../harvest/{{.PROJECT}}.xml)" --recordPath Records --recordPath Record --storeEmptyStrings false --trimStrings true --projectName {{.PROJECT}}
       # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/vorverarbeitung.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/vorverarbeitung.json {{.PROJECT}}
       # URNs extrahieren: Dubletten entfernen und verschiedene URNs zusammenführen
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/urn.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/urn.json {{.PROJECT}}
       # Fehlende Direktlinks aus Format METS ergänzen: Wenn keine Angabe in ddb:transfer, dann zusätzlich METS Format abfragen und daraus METS Flocat extrahieren
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/direktlinks.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/direktlinks.json {{.PROJECT}}
       # Datensätze ohne Direktlink auf ein PDF löschen
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nur-mit-pdf.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/nur-mit-pdf.json {{.PROJECT}}
       # Aufteilung dc:subject in ddc und topic
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/ddc-topic.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/ddc-topic.json {{.PROJECT}}
       # Standardisierte Rechteangaben (Canonical Name aus CC Links in dc:rights)
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/cc.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/cc.json {{.PROJECT}}
       # Internet Media Type aus ddb:transfer ableiten: Mapping manuell nach Apache http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/mime.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/mime.json {{.PROJECT}}
       # DOIs aus Format OAI_DC ergänzen: Für alle Datensätze zusätzlich DC Format abfragen und daraus dc:identifier mit Typ doi extrahieren
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doi.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/doi.json {{.PROJECT}}
       # Anreicherung HT-Nummer via lobid-resources: Bei mehreren URNs ODER-Suche; bei mehreren Treffern wird nur der erste übernommen
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/hbz.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/hbz.json {{.PROJECT}}
       # Sortierung mods:nonSort für das erste Element in dc:title
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/nonsort.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/nonsort.json {{.PROJECT}}
       # DINI Publikationstypen aus dc:type extrahieren
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/dini.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/dini.json {{.PROJECT}}
       # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habilitation dann doctype oaHabil
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/doctype.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/doctype.json {{.PROJECT}}
       # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
-      - $OPENREFINE_CLIENT -P $PORT --apply ../../../rules/siegen/join.json $PROJECT
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/join.json {{.PROJECT}}
       # Export in METS:MODS mit Templating
       - |
-        $OPENREFINE_CLIENT -P $PORT --export --template "$(< ../../../rules/siegen/template.txt)" --rowSeparator "
+        $OPENREFINE_CLIENT -P {{.PORT}} --export --template "$(< ../../../rules/{{.PROJECT}}/template.txt)" --rowSeparator "
         <!-- SPLIT -->
         " --suffix "
-        " --output siegen.txt $PROJECT
-      # Statistik zu Laufzeit und Ressourcenverbrauch
-      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:$PORT)
-      # OpenRefine beenden
-      - PID=$(lsof -t -i:$PORT); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
-      # OpenRefine-Projekt für Debugging archivieren
-      - tar cfz siegen.openrefine.tar.gz -C $(grep -l siegen *.project/metadata.json | cut -d '/' -f 1) .
-      # Temporäre Dateien löschen
-      - rm -rf ./*.project* && rm -f workspace.json
+        " --output {{.PROJECT}}.txt {{.PROJECT}}
+      - task: :openrefine-stop
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}'}
     sources:
-      - ../harvest/siegen.xml
-      - ../../../rules/siegen/*.json
-      - ../../../rules/siegen/template.txt
+      - ../harvest/{{.PROJECT}}.xml
+      - ../../../rules/{{.PROJECT}}/*.json
+      - ../../../rules/{{.PROJECT}}/template.txt
 #TODO - ../../../rules/common/*.json
     generates:
       - openrefine.log
-      - siegen.txt
-      - siegen.openrefine.tar.gz
+      - '{{.PROJECT}}.txt'
+      - '{{.PROJECT}}.openrefine.tar.gz'
 
   linkcheck:
     desc: OPUS Siegen links überprüfen
