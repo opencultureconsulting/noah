@@ -56,6 +56,10 @@ tasks:
       - rm -f *.xml
       # Identifier als Dateinamen
       - for f in xx*; do mv "$f" "$(xmllint --xpath "//*[local-name(.) = 'recordIdentifier']/text()" "$f").xml"; done
+    sources:
+      - ../refine/{{.PROJECT}}.txt
+    generates:
+      - ./*.xml
 
   validate:
     dir: data/{{.PROJECT}}
@@ -64,6 +68,10 @@ tasks:
       # Validierung gegen METS Schema
       - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
       - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
+    sources:
+      - split/*.xml
+    generates:
+      - validate.log
 
   zip:
     dir: data/{{.PROJECT}}
@@ -71,6 +79,10 @@ tasks:
       - test -n "{{.PROJECT}}"
       # ZIP-Archiv mit Zeitstempel erstellen
       - zip -q -FS -j {{.PROJECT}}_{{.DATE}}.zip split/*.xml
+    sources:
+      - split/*.xml
+    generates:
+      - "{{.PROJECT}}_{{.DATE}}.zip"
 
   diff:
     dir: data/{{.PROJECT}}
@@ -85,6 +97,10 @@ tasks:
       - if (( 500 < $(wc -l <diff.log) )); then echo 1>&2 "Unerwartet große Änderungen in $PWD/diff.log!" && exit 1; fi
       # Diff archivieren
       - cp diff.log {{.PROJECT}}_{{.DATE}}.diff
+    sources:
+      - split/*.xml
+    generates:
+      - diff.log
     status:
       # Task nicht ausführen, wenn weniger als zwei ZIP-Archive vorhanden
       - test -z $(ls -t *.zip | sed -n 2p)
@@ -100,6 +116,10 @@ tasks:
       - rm -rf links.txt
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
+    sources:
+      - split/*.xml
+    generates:
+      - linkcheck.log
 
   delete:
     dir: data/{{.PROJECT}}
