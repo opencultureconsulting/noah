@@ -1,0 +1,78 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    desc: miami ULB Münster
+    vars:
+      PROJECT: muenster
+      MINIMUM: 1250 # Mindestanzahl der zu erwartenden Datensätze
+    cmds:
+      - task: harvest
+      - task: refine
+      # Folgende Tasks beginnend mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
+#      - task: :check
+#        vars: {PROJECT: '{{.PROJECT}}', MINIMUM: '{{.MINIMUM}}'}
+#      - task: :split
+#        vars: {PROJECT: '{{.PROJECT}}'}
+#      - task: :validate
+#        vars: {PROJECT: '{{.PROJECT}}'}
+#      - task: :zip
+#        vars: {PROJECT: '{{.PROJECT}}'}
+#      - task: :diff
+#        vars: {PROJECT: '{{.PROJECT}}'}
+
+  harvest:
+    dir: data/{{.PROJECT}}/harvest
+    vars:
+      URL: http://repositorium.uni-muenster.de/oai/miami
+      FORMAT: mets
+      PROJECT: muenster
+    cmds:
+      - METHA_DIR=$PWD metha-sync --format {{.FORMAT}} {{.URL}}
+      - METHA_DIR=$PWD metha-cat --format {{.FORMAT}} {{.URL}} > {{.PROJECT}}.xml
+
+  refine:
+    dir: data/{{.PROJECT}}/refine
+    ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141
+    vars:
+      PORT: 3334
+      RAM: 4G
+      PROJECT: muenster
+    cmds:
+      - task: :openrefine-start
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}', RAM: '{{.RAM}}'}
+      # Import (erfordert absoluten Pfad zur XML-Datei)
+      - $OPENREFINE_CLIENT -P {{.PORT}} --create "$(readlink -e ../harvest/{{.PROJECT}}.xml)" --recordPath Records --recordPath Record --recordPath metadata --recordPath mets:mets --storeEmptyStrings false --trimStrings true --projectName {{.PROJECT}}
+      # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen
+      - $OPENREFINE_CLIENT -P {{.PORT}} --apply ../../../rules/{{.PROJECT}}/vorverarbeitung.json {{.PROJECT}}
+#      # Export in METS:MODS mit Templating
+#      - |
+#        $OPENREFINE_CLIENT -P {{.PORT}} --export --template "$(< ../../../rules/{{.PROJECT}}/template.txt)" --rowSeparator "
+#        <!-- SPLIT -->
+#        " --suffix "
+#        " --output {{.PROJECT}}.txt {{.PROJECT}}
+      - task: :openrefine-stop
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}'}
+    sources:
+      - ../harvest/{{.PROJECT}}.xml
+      - ../../../rules/{{.PROJECT}}/*.json
+#      - ../../../rules/{{.PROJECT}}/template.txt
+#TODO - ../../../rules/common/*.json
+    generates:
+      - openrefine.log
+#      - '{{.PROJECT}}.txt'
+      - '{{.PROJECT}}.openrefine.tar.gz'
+
+  linkcheck:
+    desc: miami ULB Münster links überprüfen
+    cmds:
+      - task: :linkcheck
+        vars: {PROJECT: "muenster"}
+
+  delete:
+    desc: miami ULB Münster cache löschen
+    cmds:
+      - task: :delete
+        vars: {PROJECT: "muenster"}

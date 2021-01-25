@@ -5,6 +5,7 @@ version: '3'
 output: prefixed
 
 includes:
+  muenster: ./tasks/muenster.yml
   siegen: ./tasks/siegen.yml
   wuppertal: ./tasks/wuppertal.yml
 
@@ -34,6 +35,7 @@ tasks:
       - sh: test -n "$(command -v xmllint)"
         msg: "requirement xmllint missing"
     deps:
+      - task: muenster:default
       - task: wuppertal:default
       - task: siegen:default
 
