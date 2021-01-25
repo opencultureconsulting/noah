@@ -42,6 +42,8 @@ tasks:
     dir: data/{{.PROJECT}}/refine
     cmds:
       - test -n "{{.PROJECT}}"; test -n "{{.PORT}}"; test -n "{{.RAM}}"
+      # Temporäre Dateien löschen
+      - rm -rf ./*.project* && rm -f workspace.json
       # OpenRefine starten und Logdatei schreiben für spätere checks
       - $OPENREFINE -v warn -p {{.PORT}} -m {{.RAM}} -d $PWD > openrefine.log 2>&1 &
       # Warten bis OpenRefine erreichbar ist
@@ -58,8 +60,6 @@ tasks:
       - PID=$(lsof -t -i:{{.PORT}}); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
       # OpenRefine-Projekt für Debugging archivieren
       - tar cfz {{.PROJECT}}.openrefine.tar.gz -C $(grep -l {{.PROJECT}} *.project/metadata.json | cut -d '/' -f 1) .
-      # Temporäre Dateien löschen
-      - rm -rf ./*.project* && rm -f workspace.json
 
   check:
     label: '{{.TASK}}-{{.PROJECT}}'
