@@ -82,7 +82,7 @@ tasks:
     cmds:
       - test -n "{{.PROJECT}}"
       # in Einzeldateien aufteilen
-      - csplit -q ../refine/{{.PROJECT}}.txt --suppress-matched '/<!-- SPLIT -->/' "{*}"
+      - csplit -s -z ../refine/{{.PROJECT}}.txt '/<mets:mets /' "{*}"
       # ggf. vorhandene XML-Dateien löschen
       - rm -f *.xml
       # Identifier als Dateinamen
