@@ -157,7 +157,7 @@
         {
           "type": "list",
           "name": "url",
-          "expression": "grel:row.record.cells['url'].value.join('').contains('.pdf')",
+          "expression": "grel:row.record.cells['url'].value.join('').toLowercase().contains('.pdf')",
           "columnName": "url",
           "invert": false,
           "omitBlank": false,

@@ -6,7 +6,7 @@
         {
           "type": "list",
           "name": "ddb:transfer",
-          "expression": "grel:row.record.cells['ddb:transfer'].value.join('').contains('.pdf')",
+          "expression": "grel:row.record.cells['ddb:transfer'].value.join('').toLowercase().contains('.pdf')",
           "columnName": "ddb:transfer",
           "invert": false,
           "omitBlank": false,
