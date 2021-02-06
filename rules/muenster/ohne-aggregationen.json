@@ -1,0 +1,30 @@
+[
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID",
+          "expression": "grel:isBlank(row.record.cells[columnName].value.join(''))",
+          "columnName": "mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": true,
+                "l": "true"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]

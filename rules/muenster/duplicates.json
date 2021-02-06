@@ -1,0 +1,59 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "record-based"
+    },
+    "columnName": "mets:mets - mets:metsHdr - CREATEDATE",
+    "expression": "value.toDate()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:metsHdr - CREATEDATE using expression value.toDate()"
+  },
+  {
+    "op": "core/row-reorder",
+    "mode": "record-based",
+    "sorting": {
+      "criteria": [
+        {
+          "valueType": "date",
+          "column": "mets:mets - mets:metsHdr - CREATEDATE",
+          "blankPosition": 2,
+          "errorPosition": 1,
+          "reverse": false
+        }
+      ]
+    },
+    "description": "Reorder rows"
+  },
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "grel:with(value.cross('muenster', columnName), rows, if(rows.length() > 1, if(rows.index.sort().reverse()[0] > row.index, 'is duplicate of a higher row number', 'has duplicate(s) with lower row number'), 'unique'))",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "is duplicate of a higher row number",
+                "l": "is duplicate of a higher row number"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]

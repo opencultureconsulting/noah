@@ -1,0 +1,81 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang",
+          "expression": "value",
+          "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "0",
+                "l": "0"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract",
+    "expression": "null",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract using expression null"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang",
+          "expression": "value",
+          "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "0",
+                "l": "0"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang",
+    "expression": "null",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang using expression null"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract",
+    "expression": "grel:value.parseHtml().htmlText().trim()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract using expression grel:value.parseHtml().htmlText().trim()"
+  }
+]

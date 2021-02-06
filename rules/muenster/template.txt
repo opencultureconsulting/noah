@@ -1,0 +1,138 @@
+{{
+if(row.index - row.record.fromRowIndex == 0,
+with(cross(cells['index'].value, 'muenster' , 'index'), rows,
+'<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">' + '\n' +
+'    <mets:dmdSec ID="' + cells['mets:mets - mets:dmdSec - ID'].value.escape('xml') + '">' + '\n' +
+'        <mets:mdWrap MIMETYPE="text/xml" MDTYPE="MODS">' + '\n' +
+'            <mets:xmlData>' + '\n' +
+'                <mods xmlns="http://www.loc.gov/mods/v3" version="3.7" xmlns:vl="http://visuallibrary.net/vl">' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title'].value)), r,
+'                    <titleInfo' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - lang'].value, v, ' lang="' + v.escape('xml') + '"', '') + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - type'].value.replace('uniform', ''), v, ' type="' + v.escape('xml') + '"', '') + '>' + '\n' +
+                         forNonBlank(r.cells['nonsort'].value, v,
+'                        <nonSort>' + v.escape('xml') + '</nonSort>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title'].value, v,
+'                        <title>' + v.escape('xml') + '</title>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:subTitle'].value, v,
+'                        <subTitle>' + v.escape('xml') + '</subTitle>' + '\n'
+                         , '') +
+'                    </titleInfo>' + '\n'
+                    ).join('') +
+                     forEachIndex(rows, i, r, if(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - type'].value == 'personal',
+'                    <name type="personal">' + '\n' +
+'                        <displayForm>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:displayForm'].value.escape('xml') + '</displayForm>' + '\n' +
+'                        <namePart type="' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart - type'].value.escape('xml') + '">' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart'].value.escape('xml') + '</namePart>' + '\n' +
+                         if(and(isBlank(rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - type'].value), isNonBlank(rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart - type'].value)),
+'                        <namePart type="' + rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart - type'].value.escape('xml') + '">' + rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart'].value.escape('xml') + '</namePart>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:role - mods:roleTerm'].value, v,
+'                        <role>' + '\n' +
+'                            <roleTerm type="code" authority="marcrelator">' + v.escape('xml') + '</roleTerm>' + '\n' +
+'                        </role>' + '\n'
+                         , '') +
+'                    </name>' + '\n'
+                     , '')).join('') +
+'                    <typeOfResource>text</typeOfResource>' + '\n' +
+'                    <genre authority="dini">' + cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:genre'].value.escape('xml') + '</genre>' + '\n' +
+'                    <originInfo>' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateIssued'].value)), r,
+'                        <dateIssued encoding="w3cdtf"' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateIssued - keyDate'].value, v, ' keyDate="' + v.escape('xml') + '"', '') + '>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateIssued'].value.escape('xml') + '</dateIssued>' + '\n'
+                     ).join('') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateOther'].value)), r,
+'                        <dateOther encoding="w3cdtf"' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateOther - keyDate'].value, v, ' keyDate="' + v.escape('xml') + '"', '') + '>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:originInfo - mods:dateOther'].value.escape('xml') + '</dateOther>' + '\n'
+                     ).join('') +
+'                    </originInfo>' + '\n' +
+'                    <language>' + '\n' +
+'                        <languageTerm type="code" authority="iso639-2b">' + cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:language - mods:languageTerm'].value.escape('xml') + '</languageTerm>' + '\n' +
+'                    </language>' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract'].value)), r,
+'                    <abstract' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract - lang'].value, v, ' lang="' + v.escape('xml') + '"', '') + '>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:abstract'].value.escape('xml') + '</abstract>' + '\n'
+                     ).join('') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note'].value)), r,
+'                    <note' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note'].value.escape('xml') + '</note>' + '\n'
+                     ).join('') +
+                     if(row.record.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value.inArray('ger'),
+'                    <subject lang="ger">' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value == 'ger'), r,
+                         forEach(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic'].value.split(';'), v,
+'                        <topic>' + v.trim().escape('xml') + '</topic>' + '\n'
+                         ).join('')
+                     ).join('') +
+                     if(row.record.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value.inArray('ger'),
+'                    </subject>' + '\n'
+                     , '') +
+                     if(row.record.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value.inArray('eng'),
+'                    <subject lang="eng">' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value == 'eng'), r,
+                         forEach(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic'].value.split(';'), v,
+'                        <topic>' + v.trim().escape('xml') + '</topic>' + '\n'
+                         ).join('')
+                     ).join('') +
+                     if(row.record.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:subject - mods:topic - lang'].value.inArray('eng'),
+'                    </subject>' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:classification - authority'].value == 'ddc'), r,
+'                    <classification authority="ddc">' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:classification'].value.escape('xml') + '</classification>' + '\n'
+                     ).join('') +
+                     forEach(filter(rows, r, r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:relatedItem - type'].value == 'host'), r,
+'                    <relatedItem type="host">' + '\n' +
+'                        <titleInfo>' + '\n' +
+'                            <title>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:relatedItem - mods:titleInfo - mods:title'].value.escape('xml') + '</title>' + '\n' +
+'                        </titleInfo>' + '\n' +
+'                        <part>' + '\n' +
+'                            <detail type="issue">' + '\n' +
+'                                <number>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:relatedItem - mods:titleInfo - mods:title'].value.escape('xml') + '</number>' + '\n' +
+'                            </detail>' + '\n' +
+'                            <extent unit="page">' + '\n' +
+'                                <start>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:relatedItem - mods:part - mods:extent - mods:start'].value.escape('xml') + '</start>' + '\n' +
+'                                <end>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:relatedItem - mods:part - mods:extent - mods:end'].value.escape('xml') + '</end>' + '\n' +
+'                            </extent>' + '\n' +
+'                        </part>' + '\n' +
+'                    </relatedItem>' + '\n'
+                     ).join('') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:identifier - type'].value)), r,
+'                    <identifier' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:identifier - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:identifier'].value.escape('xml') + '</identifier>' + '\n'
+                     ).join('') +
+                     forNonBlank(cells['hbz'].value, v,
+'                    <identifier type="sys">' + v.escape('xml') + '</identifier>' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:accessCondition - type'].value)), r,
+'                    <accessCondition type="use and reproduction" xlink:href="' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:accessCondition - mods:extension - ma:maWrap - ma:licence - ma:targetUrl'].value.escape('xml') + '">' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:accessCondition - mods:extension - ma:maWrap - ma:licence - ma:displayLabel'].value.replace('InC 1.0', 'Urheberrechtsschutz').escape('xml') + '</accessCondition>' + '\n'
+                     ).join('') +
+'                    <recordInfo>' + '\n' +
+'                        <recordIdentifier>' + 'muenster_miami_' + cells['id'].value.split(':').reverse()[0].escape('xml') + '</recordIdentifier>' + '\n' +
+'                    </recordInfo>' + '\n' +
+                     forNonBlank(cells['doctype'].value, v,
+'                    <extension>' + '\n' +
+'                        <vl:doctype>' + v.escape('xml') + '</vl:doctype>' + '\n' +
+'                    </extension>' + '\n'
+                     , '') +
+'                </mods>' + '\n' +
+'            </mets:xmlData>' + '\n' +
+'        </mets:mdWrap>' + '\n' +
+'    </mets:dmdSec>' + '\n' +
+'    <mets:fileSec>' + '\n' +
+         forEachIndex(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value)), i, r,
+'        <mets:fileGrp USE="' + if(r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value == filter(row.record.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value, v, v.toLowercase().contains('.pdf'))[0], 'pdf upload', 'generic file') + '">' + '\n' +
+'            <mets:file MIMETYPE="' + r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - MIMETYPE'].value.escape('xml') + '" ID="' + r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID'].value.escape('xml') + '">' + '\n' +
+'                <mets:FLocat xlink:href="' + r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value.escape('xml') + '" LOCTYPE="URL"/>' + '\n' +
+'            </mets:file>' + '\n' +
+'        </mets:fileGrp>' + '\n'
+         ).join('') +
+'    </mets:fileSec>' + '\n' +
+'    <mets:structMap TYPE="LOGICAL">' + '\n' +
+'        <mets:div TYPE="document" ID="' + 'muenster_miami_' + cells['id'].value.split(':').reverse()[0].escape('xml') + '" DMDID="' + cells['mets:mets - mets:dmdSec - ID'].value.escape('xml') + '">' + '\n' +
+'            <mets:fptr FILEID="' + cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID'].value.escape('xml') + '"/>' + '\n' +
+             forEachIndex(filter(rows, r, isNonBlank(r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value)).slice(1), i, r,
+'            <mets:div TYPE="part" ID="' + 'PART' + (i+1) + '_' + cells['id'].value.split(':').reverse()[0].escape('xml') + '" LABEL="' + if(r.cells['mets:mets - mets:fileSec - mets:fileGrp - USE'].value == 'DOWNLOAD', 'Download ZIP-Archiv (mit allen Dateien)' , r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href'].value.split('/').reverse()[0].escape('xml')) + '">' + '\n' +
+'                <mets:fptr FILEID="' + r.cells['mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID'].value.escape('xml') + '"/>' + '\n' +
+'            </mets:div>' + '\n'
+             ).join('') +
+'        </mets:div>' + '\n' +
+'    </mets:structMap>' + '\n' +
+'</mets:mets>' + '\n'
+), '')
+}}

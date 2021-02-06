@@ -1,0 +1,87 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title",
+    "expression": "grel:with(['a', 'das', 'dem', 'den', 'der', 'des', 'die', 'ein', 'eine', 'einem', 'einen', 'einer', 'eines', 'the'],x,if(inArray(x,value.split(' ')[0].toLowercase()),value.split(' ')[0] + ' ',''))",
+    "onError": "set-to-blank",
+    "newColumnName": "nonsort",
+    "columnInsertIndex": 43,
+    "description": "Create column nonsort at index 43 based on column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title using expression grel:with(['a', 'das', 'dem', 'den', 'der', 'des', 'die', 'ein', 'eine', 'einem', 'einen', 'einer', 'eines', 'the'],x,if(inArray(x,value.split(' ')[0].toLowercase()),value.split(' ')[0] + ' ',''))"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        },
+        {
+          "type": "list",
+          "name": "nonsort",
+          "expression": "isBlank(value)",
+          "columnName": "nonsort",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title",
+    "expression": "grel:value.split(' ').slice(1).join(' ')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:titleInfo - mods:title using expression grel:value.split(' ').slice(1).join(' ')"
+  }
+]
