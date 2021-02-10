@@ -37,7 +37,7 @@ tasks:
     dir: data/{{.PROJECT}}/refine
     ignore_error: true # provisorisch verwaisten Java-Prozess bei Exit vermeiden https://github.com/go-task/task/issues/141
     vars:
-      PORT: 3334
+      PORT: 3336
       RAM: 4G
       PROJECT: muenster
     cmds:
