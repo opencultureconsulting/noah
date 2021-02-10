@@ -35,7 +35,7 @@
         {
           "type": "list",
           "name": "id",
-          "expression": "grel:with(value.cross('muenster', columnName), rows, if(rows.length() > 1, if(rows.index.sort().reverse()[0] > row.index, 'is duplicate of a higher row number', 'has duplicate(s) with lower row number'), 'unique'))",
+          "expression": "grel:with(value.cross('muenster', columnName), rows, if(rows.length() > 1, if(rows.index.sort()[-1] > row.index, 'is duplicate of a higher row number', 'has duplicate(s) with lower row number'), 'unique'))",
           "columnName": "id",
           "invert": false,
           "omitBlank": false,

@@ -26,10 +26,10 @@
       "mode": "row-based"
     },
     "columnName": "mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID",
-    "expression": "grel:'FILE_' + row.record.cells['id'].value[0].split(':').reverse()[0] + '_' + (row.index - row.record.fromRowIndex + 1)",
+    "expression": "grel:'FILE_' + row.record.cells['id'].value[0].split(':')[-1] + '_' + (row.index - row.record.fromRowIndex + 1)",
     "onError": "keep-original",
     "repeat": false,
     "repeatCount": 10,
-    "description": "Text transform on cells in column mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID using expression grel:'FILE_' + row.record.cells['id'].value[0].split(':').reverse()[0] + '_' + (row.index - row.record.fromRowIndex + 1)"
+    "description": "Text transform on cells in column mets:mets - mets:fileSec - mets:fileGrp - mets:file - ID using expression grel:'FILE_' + row.record.cells['id'].value[0].split(':')[-1] + '_' + (row.index - row.record.fromRowIndex + 1)"
   }
 ]

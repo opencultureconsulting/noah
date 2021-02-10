@@ -57,11 +57,11 @@
       "mode": "row-based"
     },
     "columnName": "setSpec",
-    "expression": "grel:value.split(':').reverse()[0]",
+    "expression": "grel:value.split(':')[-1]",
     "onError": "keep-original",
     "repeat": false,
     "repeatCount": 10,
-    "description": "Text transform on cells in column setSpec using expression grel:value.split(':').reverse()[0]"
+    "description": "Text transform on cells in column setSpec using expression grel:value.split(':')[-1]"
   },
   {
     "op": "core/text-transform",
