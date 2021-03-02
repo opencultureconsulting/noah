@@ -1,0 +1,141 @@
+version: '3'
+
+tasks:
+  main:
+    desc: OPUS Siegen
+    vars:
+      MINIMUM: 1250 # Mindestanzahl der zu erwartenden Datensätze
+      PROJECT: '{{splitList ":" .TASK | first}}' # results in the task namespace, which is identical to the directory name
+    cmds:
+      - task: harvest
+      - task: refine
+      # Folgende Tasks beginnend mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
+      - task: :check
+        vars: {PROJECT: '{{.PROJECT}}', MINIMUM: '{{.MINIMUM}}'}
+      - task: :split
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :validate
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :zip
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :diff
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  harvest:
+    dir: ./{{.PROJECT}}/harvest
+    vars:
+      URL: https://dspace.ub.uni-siegen.de/oai/request
+      FORMAT: xMetaDissPlus
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - METHA_DIR=$PWD metha-sync --format {{.FORMAT}} {{.URL}}
+      - METHA_DIR=$PWD metha-cat --format {{.FORMAT}} {{.URL}} > {{.PROJECT}}.xml
+
+  refine:
+    dir: ./{{.PROJECT}}
+    vars:
+      PORT: 3334 # assign a different port for each project
+      RAM: 4G # maximum RAM for OpenRefine java heap space
+      PROJECT: '{{splitList ":" .TASK | first}}'
+      LOG: '>(tee -a "refine/{{.PROJECT}}.log") 2>&1'
+    cmds:
+      - mkdir -p refine
+      - task: :start # launch OpenRefine
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}', RAM: '{{.RAM}}'}
+      - > # Import (erfordert absoluten Pfad zur XML-Datei)
+        "$CLIENT" -P {{.PORT}}
+        --create "$(readlink -m harvest/{{.PROJECT}}.xml)"
+        --recordPath Records --recordPath Record
+        --storeEmptyStrings false --trimStrings true
+        --projectName "{{.PROJECT}}"
+        > {{.LOG}}
+      - > # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/vorverarbeitung.json
+        > {{.LOG}}
+      - > # URNs extrahieren: Dubletten entfernen und verschiedene URNs zusammenführen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/urn.json
+        > {{.LOG}}
+      - > # Fehlende Direktlinks aus Format METS ergänzen: Wenn keine Angabe in ddb:transfer, dann zusätzlich METS Format abfragen und daraus METS Flocat extrahieren
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/direktlinks.json
+        > {{.LOG}}
+      - > # Datensätze ohne Direktlink auf ein PDF löschen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/nur-mit-pdf.json
+        > {{.LOG}}
+      - > # Aufteilung dc:subject in ddc und topic
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/ddc-topic.json
+        > {{.LOG}}
+      - > # Standardisierte Rechteangaben (Canonical Name aus CC Links in dc:rights)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/cc.json
+        > {{.LOG}}
+      - > # Internet Media Type aus ddb:transfer ableiten: Mapping manuell nach Apache http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/mime.json
+        > {{.LOG}}
+      - > # DOIs aus Format OAI_DC ergänzen: Für alle Datensätze zusätzlich DC Format abfragen und daraus dc:identifier mit Typ doi extrahieren
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/doi.json
+        > {{.LOG}}
+      - > # Anreicherung HT-Nummer via lobid-resources: Bei mehreren URNs ODER-Suche; bei mehreren Treffern wird nur der erste übernommen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/hbz.json
+        > {{.LOG}}
+      - > # Sortierung mods:nonSort für das erste Element in dc:title
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/nonsort.json
+        > {{.LOG}}
+      - > # DINI Publikationstypen aus dc:type extrahieren
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/dini.json
+        > {{.LOG}}
+      - > # Visual Library doctype aus dc:type: Wenn thesis:level == thesis.habilitation dann doctype oaHabil
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/doctype.json
+        > {{.LOG}}
+      - > # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/join.json
+        > {{.LOG}}
+      - | # Export in METS:MODS mit Templating
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}" --export --template "$(< config/template.txt)" --rowSeparator "
+        " --suffix "
+        " --output "$(readlink -m refine/{{.PROJECT}}.txt)" > {{.LOG}}
+      - | # print allocated system resources
+        PID="$(lsof -t -i:{{.PORT}})"
+        echo "used $(($(ps --no-headers -o rss -p "$PID") / 1024)) MB RAM" > {{.LOG}}
+        echo "used $(ps --no-headers -o cputime -p "$PID") CPU time" > {{.LOG}}
+      - task: :stop # shut down OpenRefine and archive the OpenRefine project
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}'}
+    sources:
+      - Taskfile.yml
+      - harvest/{{.PROJECT}}.xml
+      - config/**
+    generates:
+      - refine/{{.PROJECT}}.openrefine.tar.gz
+      - refine/{{.PROJECT}}.txt
+    ignore_error: true # workaround to avoid an orphaned Java process on error https://github.com/go-task/task/issues/141
+
+  linkcheck:
+    desc: OPUS Siegen links überprüfen
+    vars:
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - task: :linkcheck
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  delete:
+    desc: OPUS Siegen cache löschen
+    vars:
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - task: :delete
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  default: # enable standalone execution (running `task` in project directory)
+    cmds:
+      - DIR="${PWD##*/}:main" && cd .. && task "$DIR"

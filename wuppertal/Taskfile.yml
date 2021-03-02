@@ -1,0 +1,145 @@
+version: '3'
+
+tasks:
+  main:
+    desc: Elpub Wuppertal
+    vars:
+      MINIMUM: 1300 # Mindestanzahl der zu erwartenden Datensätze
+      PROJECT: '{{splitList ":" .TASK | first}}' # results in the task namespace, which is identical to the directory name
+    cmds:
+      - task: harvest
+      - task: refine
+      # Folgende Tasks beginnend mit ":" sind für alle Datenquellen gleich in Taskfile.yml definiert
+      - task: :check
+        vars: {PROJECT: '{{.PROJECT}}', MINIMUM: '{{.MINIMUM}}'}
+      - task: :split
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :validate
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :zip
+        vars: {PROJECT: '{{.PROJECT}}'}
+      - task: :diff
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  harvest:
+    dir: ./{{.PROJECT}}/harvest
+    vars:
+      URL: http://elpub.bib.uni-wuppertal.de/servlets/OAIDataProvider
+      FORMAT: oai_dc
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - METHA_DIR=$PWD metha-sync --format {{.FORMAT}} {{.URL}}
+      - METHA_DIR=$PWD metha-cat --format {{.FORMAT}} {{.URL}} > {{.PROJECT}}.xml
+
+  refine:
+    dir: ./{{.PROJECT}}
+    vars:
+      PORT: 3335 # assign a different port for each project
+      RAM: 4G # maximum RAM for OpenRefine java heap space
+      PROJECT: '{{splitList ":" .TASK | first}}'
+      LOG: '>(tee -a "refine/{{.PROJECT}}.log") 2>&1'
+    cmds:
+      - mkdir -p refine
+      - task: :start # launch OpenRefine
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}', RAM: '{{.RAM}}'}
+      - > # Import (erfordert absoluten Pfad zur XML-Datei)
+        "$CLIENT" -P {{.PORT}}
+        --create "$(readlink -m harvest/{{.PROJECT}}.xml)"
+        --recordPath Records --recordPath Record
+        --storeEmptyStrings false --trimStrings true
+        --projectName "{{.PROJECT}}"
+        > {{.LOG}}
+      - > # Vorverarbeitung: Identifier in erste Spalte; nicht benötigte Spalten (ohne differenzierende Merkmale) löschen; verbleibende Spalten umbenennen (Pfad entfernen)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/vorverarbeitung.json
+        > {{.LOG}}
+      - > # Entfernen von HTML-Tags und Transformation von subscript und superscript in Unicode (betrifft dc:description, dc:source und dc:title)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/html.json
+        > {{.LOG}}
+      - > # DDC einheitlich auf drei Ziffern vereinheitlichen (betrifft dc:subjects und oai:setSpec)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/ddc.json
+        > {{.LOG}}
+      - > # dc:publisher setzen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/publisher.json
+        > {{.LOG}}
+      - > # URNs, DOIs und PDF-Links aus dc:identifier extrahieren
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/identifier.json
+        > {{.LOG}}
+      - > # Direktlinks generieren durch Abgleich der URNs mit nbn-resolving und Datensätze ohne Direktlink auf ein PDF löschen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/nbn.json
+        > {{.LOG}}
+      - > # Aufteilung dc:subject in ioo und topic
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/subjects.json
+        > {{.LOG}}
+      - > # Standardisierte Rechteangaben Teil 1 (Links zu CC-Lizenzen)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/rights.json
+        > {{.LOG}}
+      - > # Datenstruktur für Templating vorbereiten: Pro Zeile ein Datensatz und leere Zeilen löschen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/join.json
+        > {{.LOG}}
+      - > # Zusammenführung gleichsprachiger Titelangaben zu Title/Subtitle
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/subtitle.json
+        > {{.LOG}}
+      - > # Sprachangaben nach ISO-639-2b (betrifft dc:language sowie die xml:lang Attribute für dc:coverage, dc:description und dc:title)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/language.json
+        > {{.LOG}}
+      - > # Standardisierte Rechteangaben Teil 2 (Canonical Name für CC-Lizenzen)
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/rights-cc.json
+        > {{.LOG}}
+      - > # Anreicherung HT-Nummer via lobid-resources
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/hbz.json
+        > {{.LOG}}
+      - > # Sortierung mods:nonSort für das erste Element in dc:title
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/nonsort.json
+        > {{.LOG}}
+      - | # Export in METS:MODS mit Templating
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}" --export --template "$(< config/template.txt)" --rowSeparator "
+        " --suffix "
+        " --output "$(readlink -m refine/{{.PROJECT}}.txt)" > {{.LOG}}
+      - | # print allocated system resources
+        PID="$(lsof -t -i:{{.PORT}})"
+        echo "used $(($(ps --no-headers -o rss -p "$PID") / 1024)) MB RAM" > {{.LOG}}
+        echo "used $(ps --no-headers -o cputime -p "$PID") CPU time" > {{.LOG}}
+      - task: :stop # shut down OpenRefine and archive the OpenRefine project
+        vars: {PROJECT: '{{.PROJECT}}', PORT: '{{.PORT}}'}
+    sources:
+      - Taskfile.yml
+      - harvest/{{.PROJECT}}.xml
+      - config/**
+    generates:
+      - refine/{{.PROJECT}}.openrefine.tar.gz
+      - refine/{{.PROJECT}}.txt
+    ignore_error: true # workaround to avoid an orphaned Java process on error https://github.com/go-task/task/issues/141
+
+  linkcheck:
+    desc: Elpub Wuppertal links überprüfen
+    vars:
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - task: :linkcheck
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  delete:
+    desc: Elpub Wuppertal cache löschen
+    vars:
+      PROJECT: '{{splitList ":" .TASK | first}}'
+    cmds:
+      - task: :delete
+        vars: {PROJECT: '{{.PROJECT}}'}
+
+  default: # enable standalone execution (running `task` in project directory)
+    cmds:
+      - DIR="${PWD##*/}:main" && cd .. && task "$DIR"

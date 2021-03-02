@@ -1,3 +1,8 @@
-data
-openrefine
+*/harvest/*
+*/refine/*
+*/split/*
+*/validate/*
+*/zip/*
+*/*.log
+.openrefine
 .task

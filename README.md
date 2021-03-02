@@ -18,6 +18,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 * GNU/Linux (getestet mit Fedora 32)
 * JAVA 8+
+* [cURL](https://curl.se), xmllint
 
 ## Installation
 
@@ -28,29 +29,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     cd noah
     ```
 
-2. [OpenRefine 3.4.1](https://github.com/OpenRefine/OpenRefine/releases/tag/3.4.1) (benötigt JAVA 8+)
-
-    ```sh
-    # in Unterverzeichnis openrefine installieren
-    wget -O openrefine.tar.gz https://github.com/OpenRefine/OpenRefine/releases/download/3.4.1/openrefine-linux-3.4.1.tar.gz
-    mkdir -p openrefine
-    tar -xzf openrefine.tar.gz -C openrefine --strip 1 && rm openrefine.tar.gz
-    # automatisches Starten des Browsers abschalten
-    sed -i '$ a JAVA_OPTIONS=-Drefine.headless=true' "openrefine/refine.ini"
-    # Zeitraum für automatisches Speichern von 5 Minuten auf 25 Stunden erhöhen
-    sed -i 's/#REFINE_AUTOSAVE_PERIOD=60/REFINE_AUTOSAVE_PERIOD=1440/' "openrefine/refine.ini"
-    ```
-
-3. [openrefine-client 0.3.10](https://github.com/opencultureconsulting/openrefine-client/releases/tag/v0.3.10)
-
-    ```sh
-    # in Unterverzeichnis openrefine installieren
-    mkdir -p openrefine
-    wget -O openrefine/openrefine-client https://github.com/opencultureconsulting/openrefine-client/releases/download/v0.3.10/openrefine-client_0-3-10_linux
-    chmod +x openrefine/openrefine-client
-    ```
-
-4. [metha 0.2.20](https://github.com/miku/metha/releases/tag/v0.2.20)
+2. [metha 0.2.20](https://github.com/miku/metha/releases/tag/v0.2.20)
 
     a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
@@ -66,7 +45,7 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     sudo apt install ./metha_0.2.20_amd64.deb && rm metha_0.2.20_amd64.deb
     ```
 
-5. [Task 3.2.2](https://github.com/go-task/task/releases/tag/v3.2.2)
+3. [Task 3.2.2](https://github.com/go-task/task/releases/tag/v3.2.2)
 
     a) RPM-basiert (Fedora, CentOS, SLES, etc.)
 
@@ -82,31 +61,51 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
     sudo apt install ./task_linux_amd64.deb && rm task_linux_amd64.deb
     ```
 
+4. Install task ausführen, um [OpenRefine 3.4.1](https://github.com/OpenRefine/OpenRefine/releases/tag/3.4.1) und [openrefine-client 0.3.10](https://github.com/opencultureconsulting/openrefine-client/releases/tag/v0.3.10) herunterzuladen
+
+   ```sh
+   task install
+   ```
+
+
 ## Nutzung
 
 * Vorab ggf. ulimit erhöhen, um Abbruch durch "too many open files" zu vermeiden
 
     ```
-    ulimit -n 10000
+    ulimit -n 20000
     ```
 
-* Alle Datenquellen harvesten, transformieren und validieren (parallelisiert)
+* Alle Datenquellen (parallelisiert)
 
     ```
     task
     ```
 
-* Eine Datenquelle harvesten, transformieren und validieren
+* Eine Datenquelle
 
     ```
-    task siegen:default
+    task siegen:main
     ```
 
-* Zwei Datenquellen harvesten, transformieren und validieren (parallelisiert)
+* Zwei Datenquellen (parallelisiert)
 
     ```
-    task --parallel siegen:default wuppertal:default
+    task --parallel siegen:main wuppertal:main
     ```
+
+* Trotzdem Verarbeitung starten, auch wenn Checksummenprüfung ergibt, dass nichts zu tun wäre
+
+    ```sh
+    task siegen:main --force
+    ```
+
+* Zur Fehlerbehebung: Befehle ausgeben, aber nicht ausführen
+
+    ```sh
+    task siegen:main --dry --verbose --force
+    ```
+
 
 * Links einer Datenquelle überprüfen
 
@@ -128,11 +127,11 @@ Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das P
 
 ## Konfiguration
 
-* Workflow für die jeweilige Datenquelle in [tasks](tasks)
-  * Beispiel: [tasks/siegen.yml](tasks/siegen.yml)
-* OpenRefine-Transformationsregeln in [rules](rules)
-  * Beispiel: [rules/siegen/hbz.json](rules/siegen/hbz.json)
-* Allgemeine Tasks (z.B. Validierung) in [Taskfile.yml](Taskfile.yml)
+* Der Workflow einer Datenquelle wird im jeweiligen spezifischen `Taskfile.yml` definiert
+  * Beispiel: [siegen/Taskfile.yml](siegen/Taskfile.yml)
+* Die im Workflow verwendeten OpenRefine-Transformationsregeln liegen im Unterordner `config` der jeweiligen Datenquelle
+  * Beispiel: [siegen/config/hbz.json](siegen/config/hbz.json)
+* Allgemeine Tasks (z.B. Validierung) werden im [Taskfile.yml](Taskfile.yml) des Hauptordners definiert.
 
 ## OAI-PMH Data Provider
 

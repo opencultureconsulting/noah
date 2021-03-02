@@ -1,84 +1,111 @@
-# https://taskfile.dev
+# https://github.com/opencultureconsulting/openrefine-task-runner
 
 version: '3'
 
-output: prefixed
-
 includes:
-  muenster: ./tasks/muenster.yml
-  siegen: ./tasks/siegen.yml
-  wuppertal: ./tasks/wuppertal.yml
+  muenster: muenster
+  siegen: siegen
+  wuppertal: wuppertal
+
+silent: true
+output: prefixed
 
 vars:
   DATE: '{{ now | date "2006-01-02"}}'
 
 env:
   OPENREFINE:
-    sh: readlink -e openrefine/refine
-  OPENREFINE_CLIENT:
-    sh: readlink -e openrefine/openrefine-client
+    sh: readlink -m .openrefine/refine
+  CLIENT:
+    sh: readlink -m .openrefine/client
 
 tasks:
   default:
-    desc: alle Datenquellen (parallel)
-    preconditions:
-      - sh: test -n "$(command -v metha-sync)"
-        msg: "requirement metha missing"
-      - sh: test -n "$(command -v java)"
-        msg: "requirement JAVA runtime environment (jre) missing"
-      - sh: test -x "$OPENREFINE"
-        msg: "requirement OpenRefine missing"
-      - sh: test -x "$OPENREFINE_CLIENT"
-        msg: "requirement openrefine-client missing"
-      - sh: test -n "$(command -v curl)"
-        msg: "requirement curl missing"
-      - sh: test -n "$(command -v xmllint)"
-        msg: "requirement xmllint missing"
+    desc: execute all projects in parallel
     deps:
-      - task: muenster:default
-      - task: wuppertal:default
-      - task: siegen:default
+      - task: muenster:main
+      - task: siegen:main
+      - task: wuppertal:main
 
-  openrefine-start:
-    label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}/refine
+  install:
+    desc: (re)install OpenRefine and openrefine-client into subdirectory .openrefine
     cmds:
-      - test -n "{{.PROJECT}}"; test -n "{{.PORT}}"; test -n "{{.RAM}}"
-      # Temporäre Dateien löschen
-      - rm -rf ./*.project* && rm -f workspace.json
-      # OpenRefine starten und Logdatei schreiben für spätere checks
-      - $OPENREFINE -v warn -p {{.PORT}} -m {{.RAM}} -d $PWD > openrefine.log 2>&1 &
-      # Warten bis OpenRefine erreichbar ist
-      - timeout 30s bash -c "until curl -s http://localhost:{{.PORT}} | cat | grep -q -o OpenRefine ; do sleep 1; done"
+      - | # delete existing install and recreate folder
+        rm -rf .openrefine
+        mkdir -p .openrefine
+      - > # download OpenRefine archive
+        wget --no-verbose -O openrefine.tar.gz
+        https://github.com/OpenRefine/OpenRefine/releases/download/3.4.1/openrefine-linux-3.4.1.tar.gz
+      - | # install OpenRefine into subdirectory .openrefine
+        tar -xzf openrefine.tar.gz -C .openrefine --strip 1
+        rm openrefine.tar.gz
+      - | # optimize OpenRefine for batch processing
+        sed -i 's/cd `dirname $0`/cd "$(dirname "$0")"/' ".openrefine/refine" # fix path issue in OpenRefine startup file
+        sed -i '$ a JAVA_OPTIONS=-Drefine.headless=true' ".openrefine/refine.ini" # do not try to open OpenRefine in browser
+        sed -i 's/#REFINE_AUTOSAVE_PERIOD=60/REFINE_AUTOSAVE_PERIOD=1440/' ".openrefine/refine.ini" # set autosave period from 5 minutes to 25 hours
+      - > # download openrefine-client into subdirectory .openrefine
+        wget --no-verbose -O .openrefine/client
+        https://github.com/opencultureconsulting/openrefine-client/releases/download/v0.3.10/openrefine-client_0-3-10_linux
+      - chmod +x .openrefine/client # make client executable
 
-  openrefine-stop:
-    label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}/refine
+  start:
+    dir: ./{{.PROJECT}}/refine
     cmds:
-      - test -n "{{.PROJECT}}"; test -n "{{.PORT}}"
-      # Statistik zu Laufzeit und Ressourcenverbrauch
-      - ps -o start,etime,%mem,%cpu,rss -p $(lsof -t -i:{{.PORT}})
-      # OpenRefine herunterfahren
-      - PID=$(lsof -t -i:{{.PORT}}); kill $PID; while ps -p $PID > /dev/null; do sleep 1; done
-      # OpenRefine-Projekt für Debugging archivieren
-      - tar cfz {{.PROJECT}}.openrefine.tar.gz -C $(grep -l {{.PROJECT}} *.project/metadata.json | cut -d '/' -f 1) .
+      - | # verify that OpenRefine is installed
+        if [ ! -f "$OPENREFINE" ]; then
+          echo 1>&2 "OpenRefine missing; try task install"; exit 1
+        fi
+      - | # delete temporary files and log file of previous run
+        rm -rf ./*.project* workspace.json
+        rm -rf "{{.PROJECT}}.log"
+      - > # launch OpenRefine with specific data directory and redirect its output to a log file
+        "$OPENREFINE" -v warn -p {{.PORT}} -m {{.RAM}}
+        -d ../{{.PROJECT}}/refine
+        >> "{{.PROJECT}}.log" 2>&1 &
+      - | # wait until OpenRefine API is available
+        timeout 30s bash -c "until
+          wget -q -O - http://localhost:{{.PORT}} | cat | grep -q -o OpenRefine
+          do sleep 1
+        done"
+
+  stop:
+    dir: ./{{.PROJECT}}/refine
+    cmds:
+      - | # shut down OpenRefine gracefully
+        PID=$(lsof -t -i:{{.PORT}})
+        kill $PID
+        while ps -p $PID > /dev/null; do sleep 1; done
+      - > # archive the OpenRefine project
+        tar cfz
+        "{{.PROJECT}}.openrefine.tar.gz"
+        -C $(grep -l "{{.PROJECT}}" *.project/metadata.json | cut -d '/' -f 1)
+        .
+      - rm -rf ./*.project* workspace.json # delete temporary files
+
+  kill:
+    dir: ./{{.PROJECT}}/refine
+    cmds:
+      - | # shut down OpenRefine immediately to save time and disk space
+        PID=$(lsof -t -i:{{.PORT}})
+        kill -9 $PID
+        while ps -p $PID > /dev/null; do sleep 1; done
+      - rm -rf ./*.project* workspace.json # delete temporary files
 
   check:
-    label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}/refine
+    dir: ./{{.PROJECT}}/refine
     cmds:
-      - test -n "{{.PROJECT}}"; test -n "{{.MINIMUM}}"
-      # Logdatei von OpenRefine auf Warnungen und Fehlermeldungen prüfen
-      - if grep -i 'exception\|error' openrefine.log; then echo 1>&2 "Logdatei $PWD/openrefine.log enthält Warnungen!" && exit 1; fi
-      # Prüfen, ob Mindestanzahl von 1250 Datensätzen generiert wurde
-      - if (( {{.MINIMUM}} > $(grep -c recordIdentifier {{.PROJECT}}.txt) )); then echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/{{.PROJECT}}.txt!" && exit 1; fi
-    sources:
-      - openrefine.log
-      - '{{.PROJECT}}.txt'
+      - | # find log file(s) and check for "exception" or "error"
+        if grep -i 'exception\|error' $(find . -name '*.log'); then
+          echo 1>&2 "log contains warnings!"; exit 1
+        fi
+      - | # Prüfen, ob Mindestanzahl von Datensätzen generiert wurde
+        if (( {{.MINIMUM}} > $(grep -c recordIdentifier {{.PROJECT}}.txt) )); then
+           echo 1>&2 "Unerwartet geringe Anzahl an Datensätzen in $PWD/{{.PROJECT}}.txt!"; exit 1
+        fi
 
   split:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}/split
+    dir: ./{{.PROJECT}}/split
     cmds:
       - test -n "{{.PROJECT}}"
       # in Einzeldateien aufteilen
@@ -94,42 +121,42 @@ tasks:
 
   validate:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}
+    dir: ./{{.PROJECT}}/validate
     cmds:
       - test -n "{{.PROJECT}}"
       # Validierung gegen METS Schema
       - wget -q -nc https://www.loc.gov/standards/mets/mets.xsd
-      - xmllint --schema mets.xsd --noout split/*.xml > validate.log 2>&1
+      - xmllint --schema mets.xsd --noout ../split/*.xml > validate.log 2>&1
     sources:
-      - split/*.xml
+      - ../split/*.xml
     generates:
       - validate.log
 
   zip:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}
+    dir: ./{{.PROJECT}}/zip
     cmds:
       - test -n "{{.PROJECT}}"
       # ZIP-Archiv mit Zeitstempel erstellen
-      - zip -q -FS -j {{.PROJECT}}_{{.DATE}}.zip split/*.xml
+      - zip -q -FS -j {{.PROJECT}}_{{.DATE}}.zip ../split/*.xml
     sources:
-      - split/*.xml
+      - ../split/*.xml
     generates:
       - '{{.PROJECT}}_{{.DATE}}.zip'
 
   diff:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}
+    dir: ./{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
       # Inhalt der beiden letzten ZIP-Archive vergleichen
-      - if test -n "$(ls -t *.zip | sed -n 2p)"; then unzip -q -d old $(ls -t *.zip | sed -n 2p); unzip -q -d new $(ls -t *.zip | sed -n 1p); fi
+      - if test -n "$(ls -t zip/*.zip | sed -n 2p)"; then unzip -q -d old $(ls -t zip/*.zip | sed -n 2p); unzip -q -d new $(ls -t zip/*.zip | sed -n 1p); fi
       - diff -d old new > diff.log || exit 0
       - rm -rf old new
       # Diff prüfen, ob es weniger als 500 Zeilen enthält
       - if (( 500 < $(wc -l <diff.log) )); then echo 1>&2 "Unerwartet große Änderungen in $PWD/diff.log!" && exit 1; fi
       # Diff archivieren
-      - cp diff.log {{.PROJECT}}_{{.DATE}}.diff
+      - cp diff.log zip/{{.PROJECT}}_{{.DATE}}.diff
     sources:
       - split/*.xml
     generates:
@@ -137,16 +164,18 @@ tasks:
 
   linkcheck:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}
+    dir: ./{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
       # Links extrahieren
-      - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 > links.txt
+      - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 | sort | uniq > links.txt
       # http status code aller Links ermitteln
-      - curl --silent --head --write-out "%{http_code} %{url_effective}\n" $(while read line; do echo "-o /dev/null $line"; done < links.txt) > linkcheck.log
-      - rm -rf links.txt
+      - awk '{ print "url = " $0 "\noutput = /dev/null"; }' links.txt > curl.cfg
+      - curl --silent --head --location --write-out "%{http_code} %{url_effective}\n" --config curl.cfg > linkcheck.log
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
+      # Aufräumen bei Erfolg
+      - rm -rf curl.cfg links.txt
     sources:
       - split/*.xml
     generates:
@@ -154,9 +183,11 @@ tasks:
 
   delete:
     label: '{{.TASK}}-{{.PROJECT}}'
-    dir: data/{{.PROJECT}}
+    dir: ./{{.PROJECT}}
     cmds:
       - test -n "{{.PROJECT}}"
       - rm -rf harvest
       - rm -rf refine
       - rm -rf split
+      - rm -rf validate
+      - rm -f diff.log
