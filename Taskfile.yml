@@ -168,14 +168,15 @@ tasks:
     cmds:
       - test -n "{{.PROJECT}}"
       # Links extrahieren
-      - xmllint --xpath '//@*[local-name(.) = "href"]' split/*.xml | cut -d '"' -f2 | sort | uniq > links.txt
-      # http status code aller Links ermitteln
-      - awk '{ print "url = " $0 "\noutput = /dev/null"; }' links.txt > curl.cfg
-      - curl --silent --head --location --write-out "%{http_code} %{url_effective}\n" --config curl.cfg > linkcheck.log
+      - grep -o 'href="[^"]*"' split/*.xml | sed 's/:href=/\t/' | tr -d '"' | sort -k 2 --unique  > links.txt
+      # http status code ermitteln
+      - awk '{ print "url = " $2 "\noutput = /dev/null"; }' links.txt > curl.cfg
+      - curl --silent --head --location --write-out "%{http_code}\t%{url_effective}\n" --config curl.cfg > curl.log
+      # Tabelle mit status code, effektiver URL, Dateiname und start URL erstellen
+      - paste curl.log links.txt > linkcheck.log
+      - rm -rf curl.cfg curl.log links.txt
       # Logdatei auf status code != 2XX prüfen
       - if grep '^[^2]' linkcheck.log; then echo 1>&2 "Logdatei $PWD/linkcheck.log enthält problematische status codes!" && exit 1; fi
-      # Aufräumen bei Erfolg
-      - rm -rf curl.cfg links.txt
     sources:
       - split/*.xml
     generates:
