@@ -4,7 +4,7 @@ tasks:
   main:
     desc: miami ULB Münster
     vars:
-      MINIMUM: 7695 # Mindestanzahl der zu erwartenden Datensätze
+      MINIMUM: 7300 # Mindestanzahl der zu erwartenden Datensätze
       PROJECT: '{{splitList ":" .TASK | first}}' # results in the task namespace, which is identical to the directory name
     cmds:
       - task: harvest
@@ -65,8 +65,11 @@ tasks:
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/nur-mit-pdf.json
         > {{.LOG}}
-      # Index: Spalte index mit row.record.index generieren
-      - >
+      - > # Datensätze mit "restriction on access" löschen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/restriction.json
+        > {{.LOG}}
+      - > # Index: Spalte index mit row.record.index generieren
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/index.json
         > {{.LOG}}
