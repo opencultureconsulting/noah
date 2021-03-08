@@ -20,7 +20,7 @@ with(cross(cells['index'].value, 'muenster' , 'index'), rows,
 '                    </titleInfo>' + '\n'
                     ).join('') +
                      forEachIndex(rows, i, r, if(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - type'].value == 'personal',
-'                    <name type="personal">' + '\n' +
+'                    <name type="personal"' + forNonBlank(r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - valueURI'].value, v, ' authority="gnd" authorityURI="http://d-nb.info/gnd/" valueURI="' + v.escape('xml') + '"', '') + '>' + '\n' +
 '                        <displayForm>' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:displayForm'].value.escape('xml') + '</displayForm>' + '\n' +
 '                        <namePart type="' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart - type'].value.escape('xml') + '">' + r.cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart'].value.escape('xml') + '</namePart>' + '\n' +
                          if(and(isBlank(rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - type'].value), isNonBlank(rows[i+1].cells['mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:name - mods:namePart - type'].value)),
