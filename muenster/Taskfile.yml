@@ -93,6 +93,10 @@ tasks:
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/file-id.json
         > {{.LOG}}
+      - > # mods:note type teilweise filtern
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/note.json
+        > {{.LOG}}
       - > # Anreicherung HT-Nummer via lobid-resources: Bei mehreren URNs ODER-Suche; bei mehreren Treffern wird nur der erste übernommen
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/hbz.json

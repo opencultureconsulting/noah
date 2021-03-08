@@ -1,0 +1,67 @@
+[
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "thesis"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "thesis statement"
+      }
+    ],
+    "description": "Mass edit cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type",
+          "expression": "value",
+          "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type",
+          "invert": true,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "citation/reference",
+                "l": "citation/reference"
+              }
+            },
+            {
+              "v": {
+                "v": "ownership",
+                "l": "ownership"
+              }
+            },
+            {
+              "v": {
+                "v": "thesis statement",
+                "l": "thesis statement"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type",
+    "expression": "grel:null",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:note - type using expression grel:null"
+  }
+]
