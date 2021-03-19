@@ -1,0 +1,30 @@
+[
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href",
+          "expression": "grel:with(row.record.cells[columnName].value, x, and(x.length() == 1, x[0].toLowercase().contains('.pdf')))",
+          "columnName": "mets:mets - mets:fileSec - mets:fileGrp - mets:file - mets:FLocat - xlink:href",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]

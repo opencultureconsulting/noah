@@ -4,7 +4,7 @@ tasks:
   main:
     desc: miami ULB Münster
     vars:
-      MINIMUM: 7300 # Mindestanzahl der zu erwartenden Datensätze
+      MINIMUM: 6600 # Mindestanzahl der zu erwartenden Datensätze
       PROJECT: '{{splitList ":" .TASK | first}}' # results in the task namespace, which is identical to the directory name
     cmds:
       - task: harvest
@@ -65,6 +65,18 @@ tasks:
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/nur-mit-pdf.json
         > {{.LOG}}
+      - > # Separaten Download-Link entfernen, wenn nur eine Datei vorhanden ist
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/flocat.json
+        > {{.LOG}}
+      - > # Vorläufig Datensätze löschen, die mehr als einen Direktlink beinhalten https://github.com/opencultureconsulting/noah/issues/25
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/nur-ein-direktlink.json
+        > {{.LOG}}
+      - > # Vorläufig Zeitschriftenhefte löschen https://github.com/opencultureconsulting/noah/issues/31
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/keine-zeitschriftenhefte.json
+        > {{.LOG}}
       - > # Datensätze mit "restriction on access" löschen
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/restriction.json
@@ -84,10 +96,6 @@ tasks:
       - > # HTML-Codes in Abstracts entfernen und Abstracts ohne Sprachangabe löschen
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/abstract.json
-        > {{.LOG}}
-      - > # Separaten Download-Link entfernen, wenn nur eine Datei vorhanden ist
-        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
-        --apply config/flocat.json
         > {{.LOG}}
       - > # mets:file - ID eindeutig machen, um Validierungsfehler zu vermeiden
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"

@@ -1,0 +1,30 @@
+[
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:genre",
+          "expression": "value",
+          "columnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:genre",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "PeriodicalPart",
+                "l": "PeriodicalPart"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]
