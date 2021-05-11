@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "setSpec",
+    "expression": "grel:filter(row.record.cells[columnName].value,v,v.contains('ddc'))[0].replace('ddc:','')",
+    "onError": "set-to-blank",
+    "newColumnName": "ddc",
+    "columnInsertIndex": 39,
+    "description": "Create column ddc at index 39 based on column setSpec using expression grel:filter(row.record.cells[columnName].value,v,v.contains('ddc'))[0].replace('ddc:','')"
+  }
+]

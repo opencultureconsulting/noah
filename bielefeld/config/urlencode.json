@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "relatedItem - type",
+          "expression": "value",
+          "columnName": "relatedItem - type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "constituent",
+                "l": "constituent"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "relatedItem - location - url",
+    "expression": "grel:'https://' + forEach(value.replace('https://','').split('/'),v,v.escape('url')).join('/')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column relatedItem - location - url using expression grel:'https://' + forEach(value.replace('https://','').split('/'),v,v.escape('url')).join('/')"
+  }
+]

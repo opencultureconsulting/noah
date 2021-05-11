@@ -1,0 +1,62 @@
+[
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "name - role - roleTerm",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "author"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "aut"
+      }
+    ],
+    "description": "Mass edit cells in column name - role - roleTerm"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "name - role - roleTerm",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "editor"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "edt"
+      }
+    ],
+    "description": "Mass edit cells in column name - role - roleTerm"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "name - role - roleTerm",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "supervisor"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "dgs"
+      }
+    ],
+    "description": "Mass edit cells in column name - role - roleTerm"
+  }
+]

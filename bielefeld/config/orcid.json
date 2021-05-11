@@ -1,0 +1,35 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "name - description - type",
+          "expression": "value",
+          "columnName": "name - description - type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "orcid",
+                "l": "orcid"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "name - description",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "orcid",
+    "columnInsertIndex": 9,
+    "description": "Create column orcid at index 9 based on column name - description using expression grel:value"
+  }
+]

@@ -1,0 +1,55 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "setSpec",
+    "expression": "grel:filter(row.record.cells[columnName].value,v,v.contains('doc-type'))[0].replace('doc-type:','')",
+    "onError": "set-to-blank",
+    "newColumnName": "doctype",
+    "columnInsertIndex": 39,
+    "description": "Create column doctype at index 39 based on column setSpec using expression grel:filter(row.record.cells[columnName].value,v,v.contains('doc-type'))[0].replace('doc-type:','')"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "doctype",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "other"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "Other"
+      }
+    ],
+    "description": "Mass edit cells in column doctype"
+  }
+]

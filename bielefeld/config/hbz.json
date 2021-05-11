@@ -1,0 +1,84 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "relatedItem - identifier - type",
+          "expression": "value",
+          "columnName": "relatedItem - identifier - type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "urn",
+                "l": "urn"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "relatedItem - identifier",
+    "urlExpression": "grel:'https://lobid.org/resources/search?q=' + 'urn:\"' + value \n + '\"'",
+    "onError": "set-to-blank",
+    "newColumnName": "hbz",
+    "columnInsertIndex": 13,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4.1 [437dc4d]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column hbz at index 13 by fetching URLs based on column relatedItem - identifier using expression grel:'https://lobid.org/resources/search?q=' + 'urn:\"' + value \n + '\"'"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "relatedItem - identifier - type",
+          "expression": "value",
+          "columnName": "relatedItem - identifier - type",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "urn",
+                "l": "urn"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "hbz",
+    "expression": "grel:forNonBlank(value.parseJson().member[0].hbzId,v,v,null)",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column hbz using expression grel:forNonBlank(value.parseJson().member[0].hbzId,v,v,null)"
+  }
+]

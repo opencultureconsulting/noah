@@ -1,0 +1,130 @@
+{{
+if(row.index - row.record.fromRowIndex == 0,
+with(cross(cells['index'].value, 'bielefeld' , 'index'), rows,
+'<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">' + '\n' +
+'    <mets:dmdSec ID="' + 'DMD' + cells['id'].value.escape('xml') + '">' + '\n' +
+'        <mets:mdWrap MIMETYPE="text/xml" MDTYPE="MODS">' + '\n' +
+'            <mets:xmlData>' + '\n' +
+'                <mods xmlns="http://www.loc.gov/mods/v3" version="3.7" xmlns:vl="http://visuallibrary.net/vl">' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['titleInfo - title'].value)), r,
+'                    <titleInfo' + forNonBlank(r.cells['titleInfo - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + '\n' +
+                         forNonBlank(r.cells['nonsort'].value, v,
+'                        <nonSort>' + v.escape('xml') + '</nonSort>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['titleInfo - title'].value, v,
+'                        <title>' + v.escape('xml') + '</title>' + '\n'
+                         , '') +
+'                    </titleInfo>' + '\n'
+                    ).join('') +
+                     forEachIndex(rows, i, r, if(r.cells['name - type'].value == 'personal',
+'                    <name type="personal"' + '>' + '\n' +
+'                        <namePart type="' + r.cells['name - namePart - type'].value.escape('xml') + '">' + r.cells['name - namePart'].value.escape('xml') + '</namePart>' + '\n' +
+                         if(and(isBlank(rows[i+1].cells['name - type'].value), isNonBlank(rows[i+1].cells['name - namePart - type'].value)),
+'                        <namePart type="' + rows[i+1].cells['name - namePart - type'].value.escape('xml') + '">' + rows[i+1].cells['name - namePart'].value.escape('xml') + '</namePart>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['orcid'].value, v,
+'                        <nameIdentifier type="orcid" typeURI="http://orcid.org">' + v.escape('xml') + '</nameIdentifier>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['name - role - roleTerm'].value, v,
+'                        <role>' + '\n' +
+'                            <roleTerm type="code" authority="marcrelator">' + v.escape('xml') + '</roleTerm>' + '\n' +
+'                        </role>' + '\n'
+                         , '') +
+'                    </name>' + '\n'
+                     , '')).join('') +
+'                    <typeOfResource>text</typeOfResource>' + '\n' +
+'                    <genre authority="dini">' + cells['doctype'].value.escape('xml') + '</genre>' + '\n' +
+'                    <originInfo>' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['originInfo - dateIssued'].value)), r,
+'                        <dateIssued encoding="w3cdtf">' + r.cells['originInfo - dateIssued'].value.escape('xml') + '</dateIssued>' + '\n'
+                     ).join('') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['dateOther'].value)), r,
+'                        <dateOther encoding="w3cdtf"' + forNonBlank(r.cells['dateOther - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + r.cells['dateOther'].value.escape('xml') + '</dateOther>' + '\n'
+                     ).join('') +
+'                    </originInfo>' + '\n' +
+'                    <language>' + '\n' +
+'                        <languageTerm type="code" authority="iso639-2b">' + cells['language - languageTerm'].value.escape('xml') + '</languageTerm>' + '\n' +
+'                    </language>' + '\n' +
+                     forEach(filter(rows, r, isNonBlank(r.cells['abstract'].value)), r,
+'                    <abstract' + forNonBlank(r.cells['abstract - lang'].value, v, ' lang="' + v.escape('xml') + '"', '') + '>' + r.cells['abstract'].value.escape('xml') + '</abstract>' + '\n'
+                     ).join('') +
+                     if(isNonBlank(row.record.cells['subject - topic'].value),
+'                    <subject>' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['subject - topic'].value)), r,
+'                        <topic>' + r.cells['subject - topic'].value.escape('xml') + '</topic>' + '\n'
+                     ).join('') +
+                     if(isNonBlank(row.record.cells['subject - topic'].value),
+'                    </subject>' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['ddc'].value)), r,
+'                    <classification authority="ddc">' + r.cells['ddc'].value.escape('xml') + '</classification>' + '\n'
+                     ).join('') +
+                     forEachIndex(rows, i, r, if(and(r.cells['relatedItem - type'].value == 'host', r.cells['relatedItem - part - detail - type'].value == 'volume'),
+'                    <relatedItem type="host">' + '\n' +
+'                        <titleInfo>' + '\n' +
+'                            <title>' + r.cells['relatedItem - titleInfo - title'].value.escape('xml') + '</title>' + '\n' +
+'                        </titleInfo>' + '\n' +
+'                        <part>' + '\n' +
+'                            <detail type="volume">' + '\n' +
+'                                <number>' + r.cells['relatedItem - part - detail - number'].value.escape('xml') + '</number>' + '\n' +
+'                            </detail>' + '\n' +
+                         forNonBlank(rows[i+1].cells['relatedItem - part - detail - number'].value, v,
+'                            <detail type="issue">' + '\n' +
+'                                <number>' + v.escape('xml') + '</number>' + '\n' +
+'                            </detail>' + '\n'
+                         , '') +
+                         forNonBlank(r.cells['relatedItem - part - extent'].value.split('-')[0], v,
+'                            <extent unit="page">' + '\n' +
+'                                <start>' + v.escape('xml') + '</start>' + '\n' +
+                             forNonBlank(r.cells['relatedItem - part - extent'].value.split('-')[1], x,
+'                                <end>' + x.escape('xml') + '</end>' + '\n'
+                             , '') +
+'                            </extent>' + '\n'
+                         , '') +
+'                        </part>' + '\n' +
+'                    </relatedItem>' + '\n'
+                     , '')).join('') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['relatedItem - identifier'].value)), r,
+'                    <identifier' + forNonBlank(r.cells['relatedItem - identifier - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + r.cells['relatedItem - identifier'].value.escape('xml') + '</identifier>' + '\n'
+                     ).join('') +
+                     forNonBlank(cells['hbz'].value, v,
+'                    <identifier type="sys">' + v.escape('xml') + '</identifier>' + '\n'
+                     , '') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['rights_url'].value)), r,
+'                    <accessCondition type="use and reproduction" xlink:href="' + r.cells['rights_url'].value.escape('xml') + '">' + r.cells['rights'].value.escape('xml') + '</accessCondition>' + '\n'
+                     ).join('') +
+'                    <recordInfo>' + '\n' +
+'                        <recordIdentifier>' + 'bielefeld_pub_' + cells['id'].value.escape('xml') + '</recordIdentifier>' + '\n' +
+'                    </recordInfo>' + '\n' +
+                     forNonBlank(cells['vldoctype'].value, v,
+'                    <extension>' + '\n' +
+'                        <vl:doctype>' + v.escape('xml') + '</vl:doctype>' + '\n' +
+'                    </extension>' + '\n'
+                     , '') +
+'                </mods>' + '\n' +
+'            </mets:xmlData>' + '\n' +
+'        </mets:mdWrap>' + '\n' +
+'    </mets:dmdSec>' + '\n' +
+'    <mets:fileSec>' + '\n' +
+         forEachIndex(filter(rows, r, and(isNonBlank(r.cells['relatedItem - location - url'].value), r.cells['relatedItem - type'].value == 'constituent')), i, r,
+'        <mets:fileGrp USE="' + if(r.cells['relatedItem - location - url'].value == filter(row.record.cells['relatedItem - location - url'].value, v, v.toLowercase().contains('.pdf'))[0], 'pdf upload', 'generic file') + '">' + '\n' +
+'            <mets:file MIMETYPE="' + r.cells['relatedItem - physicalDescription - internetMediaType'].value.escape('xml') + '" ID="FILE' + i + '_bielefeld_pub_' + cells['id'].value.escape('xml') + '">' + '\n' +
+'                <mets:FLocat xlink:href="' + r.cells['relatedItem - location - url'].value.escape('xml') + '" LOCTYPE="URL"/>' + '\n' +
+'            </mets:file>' + '\n' +
+'        </mets:fileGrp>' + '\n'
+         ).join('') +
+'    </mets:fileSec>' + '\n' +
+'    <mets:structMap TYPE="LOGICAL">' + '\n' +
+'        <mets:div TYPE="document" ID="' + 'bielefeld_pub_' + cells['id'].value.escape('xml') + '" DMDID="' + 'DMD' + cells['id'].value.escape('xml') + '">' + '\n' +
+'            <mets:fptr FILEID="' + 'FILE0' + '_bielefeld_pub_' + cells['id'].value.escape('xml') + '"/>' + '\n' +
+             forEachIndex(filter(rows, r, and(isNonBlank(r.cells['relatedItem - location - url'].value), r.cells['relatedItem - type'].value == 'constituent')).slice(1), i, r,
+'            <mets:div TYPE="part" ID="' + 'PART' + (i+1) + '_' + cells['id'].value.escape('xml') + '" LABEL="' + r.cells['relatedItem - location - url - displayLabel'].value.escape('xml') + '">' + '\n' +
+'                <mets:fptr FILEID="' + 'FILE' + (i+1) + '_bielefeld_pub_' + cells['id'].value.escape('xml') + '"/>' + '\n' +
+'            </mets:div>' + '\n'
+             ).join('') +
+'        </mets:div>' + '\n' +
+'    </mets:structMap>' + '\n' +
+'</mets:mets>' + '\n'
+), '')
+}}

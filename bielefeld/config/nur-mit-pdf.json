@@ -1,0 +1,30 @@
+[
+  {
+    "op": "core/row-removal",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "relatedItem - location - url - displayLabel",
+          "expression": "grel:isNonBlank(filter(row.record.cells[columnName].value,v,v.toLowercase().contains('.pdf')).join(''))",
+          "columnName": "relatedItem - location - url - displayLabel",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "record-based"
+    },
+    "description": "Remove rows"
+  }
+]

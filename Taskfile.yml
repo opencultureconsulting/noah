@@ -3,6 +3,7 @@
 version: '3'
 
 includes:
+  bielefeld: bielefeld
   muenster: muenster
   siegen: siegen
   wuppertal: wuppertal
@@ -23,6 +24,7 @@ tasks:
   default:
     desc: execute all projects in parallel
     deps:
+      - task: bielefeld:main
       - task: muenster:main
       - task: siegen:main
       - task: wuppertal:main

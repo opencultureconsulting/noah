@@ -1,0 +1,85 @@
+[
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "titleInfo - title",
+    "expression": "grel:with(['a', 'das', 'dem', 'den', 'der', 'des', 'die', 'ein', 'eine', 'einem', 'einen', 'einer', 'eines', 'the'],x,if(inArray(x,value.split(' ')[0].toLowercase()),value.split(' ')[0] + ' ',''))",
+    "onError": "set-to-blank",
+    "newColumnName": "nonsort",
+    "columnInsertIndex": 27
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        },
+        {
+          "type": "list",
+          "name": "nonsort",
+          "expression": "isBlank(value)",
+          "columnName": "nonsort",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "titleInfo - title",
+    "expression": "grel:value.split(' ').slice(1).join(' ')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10
+  }
+]

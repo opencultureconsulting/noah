@@ -1,0 +1,274 @@
+[
+  {
+    "op": "core/column-addition-by-fetching-urls",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "baseColumnName": "id",
+    "urlExpression": "grel:'https://pub.uni-bielefeld.de/oai?verb=GetRecord&metadataPrefix=oai_dc&identifier=' + value",
+    "onError": "set-to-blank",
+    "newColumnName": "rights",
+    "columnInsertIndex": 1,
+    "delay": 0,
+    "cacheResponses": true,
+    "httpHeadersJson": [
+      {
+        "name": "authorization",
+        "value": ""
+      },
+      {
+        "name": "user-agent",
+        "value": "OpenRefine 3.4.1 [437dc4d]"
+      },
+      {
+        "name": "accept",
+        "value": "*/*"
+      }
+    ],
+    "description": "Create column rights at index 1 by fetching URLs based on column id using expression grel:'https://pub.uni-bielefeld.de/oai?verb=GetRecord&metadataPrefix=oai_dc&identifier=' + value"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "id",
+          "expression": "isBlank(value)",
+          "columnName": "id",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": false,
+                "l": "false"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "grel:forEach(value.parseXml().select('dc|rights'),v,v.xmlText()).join(',')",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column rights using expression grel:forEach(value.parseXml().select('dc|rights'),v,v.xmlText()).join(',')"
+  },
+  {
+    "op": "core/multivalued-cell-split",
+    "columnName": "rights",
+    "keyColumnName": "id",
+    "mode": "separator",
+    "separator": ",",
+    "regex": false,
+    "description": "Split multi-valued cells in column rights"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "list",
+          "name": "rights",
+          "expression": "value",
+          "columnName": "rights",
+          "invert": false,
+          "omitBlank": false,
+          "omitError": false,
+          "selection": [
+            {
+              "v": {
+                "v": "dppl_3_0",
+                "l": "dppl_3_0"
+              }
+            },
+            {
+              "v": {
+                "v": "info:eu-repo/semantics/openAccess",
+                "l": "info:eu-repo/semantics/openAccess"
+              }
+            },
+            {
+              "v": {
+                "v": "cc_0_3_0",
+                "l": "cc_0_3_0"
+              }
+            }
+          ],
+          "selectBlank": false,
+          "selectError": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "grel:null",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column rights using expression grel:null"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "rights",
+    "expression": "grel:value",
+    "onError": "set-to-blank",
+    "newColumnName": "rights_url",
+    "columnInsertIndex": 2,
+    "description": "Create column rights_url at index 2 based on column rights using expression grel:value"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "rights",
+          "columnName": "rights",
+          "query": "creativecommons",
+          "mode": "text",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "grel:value.replace('https://','').replace('http://','').replace('creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column rights using expression grel:value.replace('https://','').replace('http://','').replace('creativecommons.org/licenses/','CC ').replace('/',' ').trim().toUppercase()"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "CREATIVECOMMONS.ORG PUBLICDOMAIN ZERO 1.0"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "CC0 1.0"
+      }
+    ],
+    "description": "Mass edit cells in column rights"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "https://opendatacommons.org/licenses/by/summary/index.html"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "ODC-By"
+      }
+    ],
+    "description": "Mass edit cells in column rights"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "https://opendatacommons.org/licenses/odbl/summary/index.html"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "ODbL"
+      }
+    ],
+    "description": "Mass edit cells in column rights"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "https://opendatacommons.org/licenses/pddl/summary/index.html"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "PDDL"
+      }
+    ],
+    "description": "Mass edit cells in column rights"
+  },
+  {
+    "op": "core/mass-edit",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "rights",
+    "expression": "value",
+    "edits": [
+      {
+        "from": [
+          "https://rightsstatements.org/vocab/InC/1.0/"
+        ],
+        "fromBlank": false,
+        "fromError": false,
+        "to": "Urheberrechtsschutz"
+      }
+    ],
+    "description": "Mass edit cells in column rights"
+  }
+]
