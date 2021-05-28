@@ -88,9 +88,9 @@ with(cross(cells['index'].value, 'bielefeld' , 'index'), rows,
                      forEach(filter(rows, r, isNonBlank(r.cells['relatedItem - identifier'].value)), r,
 '                    <identifier' + forNonBlank(r.cells['relatedItem - identifier - type'].value, v, ' type="' + v.escape('xml') + '"', '') + '>' + r.cells['relatedItem - identifier'].value.escape('xml') + '</identifier>' + '\n'
                      ).join('') +
-                     forNonBlank(cells['hbz'].value, v,
-'                    <identifier type="sys">' + v.escape('xml') + '</identifier>' + '\n'
-                     , '') +
+                     forEach(filter(rows, r, isNonBlank(r.cells['hbz'].value)), r,
+'                    <identifier type="sys">' + r.cells['hbz'].value.escape('xml') + '</identifier>' + '\n'
+                     ).join('') +
                      forEach(filter(rows, r, isNonBlank(r.cells['rights_url'].value)), r,
 '                    <accessCondition type="use and reproduction" xlink:href="' + r.cells['rights_url'].value.escape('xml') + '">' + r.cells['rights'].value.escape('xml') + '</accessCondition>' + '\n'
                      ).join('') +
