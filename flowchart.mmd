@@ -5,15 +5,19 @@ siegen[dspace.ub.uni-siegen.de] --- metha_siegen
 click siegen "https://dspace.ub.uni-siegen.de/oai/request?verb=ListRecords&metadataPrefix=xMetaDissPlus" _blank
 muenster[miami.uni-muenster.de] --- metha_muenster
 click muenster "https://repositorium.uni-muenster.de/oai/miami?verb=ListRecords&metadataPrefix=mets" _blank
+bielefeld[pub.uni-bielefeld.de] --- metha_bielefeld
+click bielefeld "https://pub.uni-bielefeld.de/oai?verb=ListRecords&metadataPrefix=mods&set=open_access" _blank
 subgraph Harvesting
 metha_wuppertal["fa:fa-cogs metha"]
 metha_siegen["fa:fa-cogs metha"]
 metha_muenster["fa:fa-cogs metha"]
+metha_bielefeld["fa:fa-cogs metha"]
 end
 subgraph Transformation
 metha_wuppertal  -->|Dublin Core| refine_wuppertal[fa:fa-cogs OpenRefine]
 metha_siegen -->|xMetaDissPlus| refine_siegen[fa:fa-cogs OpenRefine]
 metha_muenster  -->|METS/MODS| refine_muenster[fa:fa-cogs OpenRefine]
+metha_bielefeld  -->|MODS| refine_bielefeld[fa:fa-cogs OpenRefine]
 end
 subgraph OAI-PMH Data Provider
 refine_wuppertal -->|METS/MODS| oai_wuppertal["noah.opencultureconsulting.com/ubw/"]
@@ -22,4 +26,6 @@ refine_siegen -->|METS/MODS| oai_siegen["noah.opencultureconsulting.com/ubs/"]
 click oai_siegen "https://noah.opencultureconsulting.com/ubs/?verb=ListRecords&metadataPrefix=mets" _blank
 refine_muenster -->|METS/MODS| oai_muenster["noah.opencultureconsulting.com/ulbm/"]
 click oai_muenster "https://noah.opencultureconsulting.com/ubm/?verb=ListRecords&metadataPrefix=mets" _blank
+refine_bielefeld -->|METS/MODS| oai_bielefeld["noah.opencultureconsulting.com/ubb/"]
+click oai_bielefeld "https://noah.opencultureconsulting.com/ubb/?verb=ListRecords&metadataPrefix=mets" _blank
 end

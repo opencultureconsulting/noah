@@ -1,11 +1,12 @@
 # Datenintegration für noah.nrw
+
 Harvesting von OAI-PMH-Schnittstellen und Transformation in METS/MODS für das Portal [noah.nrw](https://noah.nrw/)
 
 **:warning: Dies ist ein Prototyp für die Beta-Version des Portals.**
 
 ## Datenfluss
 
-![Datenflussdiagramm](flowchart.svg)
+[![Datenflussdiagramm](flowchart.svg)](https://raw.githubusercontent.com/opencultureconsulting/noah/main/flowchart.svg)
 
 ## Verwendete Tools
 
