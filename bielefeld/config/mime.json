@@ -1,0 +1,25 @@
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [
+        {
+          "type": "text",
+          "name": "relatedItem - location - url - displayLabel",
+          "columnName": "relatedItem - location - url - displayLabel",
+          "query": "\\.pdf$",
+          "mode": "regex",
+          "caseSensitive": false,
+          "invert": false
+        }
+      ],
+      "mode": "row-based"
+    },
+    "columnName": "relatedItem - physicalDescription - internetMediaType",
+    "expression": "grel:'application/pdf'",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column relatedItem - physicalDescription - internetMediaType using expression grel:'application/pdf'"
+  }
+]

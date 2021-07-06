@@ -93,6 +93,10 @@ tasks:
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/urlencode.json
         > {{.LOG}}
+      - > # internetMediaType bei Dateiendung .pdf in URL einheitlich auf application/pdf setzen
+        "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
+        --apply config/mime.json
+        > {{.LOG}}
       - > # Rechteangaben aus dc:rights in Format OAI_DC ergänzen
         "$CLIENT" -P {{.PORT}} "{{.PROJECT}}"
         --apply config/rights.json
