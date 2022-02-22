@@ -17,11 +17,11 @@
                         <role>
                             <roleTerm type="code" authority="marcrelator">aut</roleTerm>
                         </role>
-                    </name>{{forNonBlank(cells['dc:contributor'].value,x,forEach(x.split('␞'),v,'
+                    </name>{{forNonBlank(cells['dc:contributor'].value, x, forEach(x.split('␞'), v, '
                     <name type="personal">
-                        <displayForm>'+ v.escape('xml') +'</displayForm>
-                        <namePart type="family">' + v.split(',')[0].escape('xml') + '</namePart>
-                        <namePart type="given">' + v.split(',')[1].trim().escape('xml') + '</namePart>
+                        <displayForm>'+ v.escape('xml') +'</displayForm>' + forNonBlank(v.split(',')[1], z, '
+                        <namePart type="family">' + v.split(',')[0].escape('xml') + '</namePart>' + '
+                        <namePart type="given">' + z.trim().escape('xml') + '</namePart>', '') + '
                         <role>
                             <roleTerm type="code" authority="marcrelator">ctb</roleTerm>
                         </role>
