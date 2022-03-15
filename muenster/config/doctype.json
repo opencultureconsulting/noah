@@ -26,7 +26,7 @@
       "mode": "row-based"
     },
     "baseColumnName": "mets:mets - mets:dmdSec - mets:mdWrap - mets:xmlData - mods:mods - mods:genre",
-    "expression": "grel:with([ ['article','oaArticle'], ['bachelorThesis','oaBachelorThesis'], ['book','oaBook'], ['bookPart','oaBookPart'], ['conferenceObject','conferenceObject'], ['CourseMaterial','courseMaterial'], ['doctoralThesis','oaDoctoralThesis'], ['lecture','lecture'], ['Manuscript','handwritten'], ['masterThesis','oaMasterThesis'], ['MusicalNotation','notated music'], ['PeriodicalPart','journal issue'], ['preprint','oaPreprint'], ['report','oaBdArticle'], ['ResearchData','researchData'], ['review','review'], ['StudyThesis','oaStudyThesis'], ['Other','oaBdOther'],['workingPaper','workingPaper'] ], x, forEach(x, v, if(value == v[0], v[1], null)).join(''))",
+    "expression": "grel:with([ ['article','oaArticle'], ['bachelorThesis','oaBachelorThesis'], ['book','oaBook'], ['bookPart','oaBookPart'], ['conferenceObject','conference_object'], ['CourseMaterial','course_material'], ['doctoralThesis','oaDoctoralThesis'], ['lecture','lecture'], ['Manuscript','handwritten'], ['masterThesis','oaMasterThesis'], ['MusicalNotation','notated music'], ['PeriodicalPart','journal issue'], ['preprint','oaPreprint'], ['report','oaBdArticle'], ['ResearchData','research_data'], ['review','review'], ['StudyThesis','oaStudyThesis'], ['Other','oaBdOther'],['workingPaper','working_paper'] ], x, forEach(x, v, if(value == v[0], v[1], null)).join(''))",
     "onError": "set-to-blank",
     "newColumnName": "doctype",
     "columnInsertIndex": 20
